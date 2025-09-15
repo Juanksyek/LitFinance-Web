@@ -1,69 +1,61 @@
+/* src/index.css */
 @import "tailwindcss";
+
+/* ====== Tokens (Tailwind v4) ====== */
+@theme {
+  --color-primary: #ef7725;
+  --color-bg: #fef2f2;
+  --color-content: #121212;
+  --color-muted: #a0a0a0;
+
+  --radius-xl: 1rem;
+}
+
+/* Estado claro por defecto */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* Overrides para tema oscuro */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #121212;
+  --color-content: #fef2f2;
+  --color-muted: #a0a0a0;
 }
 
+/* ====== Base de app ====== */
+html,
+body,
+#root {
+  height: 100%;
+}
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  @apply bg-bg text-content antialiased;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Helpers reusables */
+.container-app {
+  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
 }
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+.card {
+  @apply rounded-[--radius-xl] bg-white/70 backdrop-blur shadow-sm ring-1 ring-black/5
+         dark:bg-white/5 dark:ring-white/10;
 }
-button:hover {
-  border-color: #646cff;
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 font-medium
+         transition hover:opacity-90 active:scale-[.98];
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.btn-primary {
+  @apply bg-primary text-white;
 }
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.btn-ghost {
+  @apply bg-transparent text-content/80 hover:bg-content/5;
+}
+.badge {
+  @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm
+                      bg-primary/10 text-primary;
+}
+.muted {
+  @apply text-sm text-muted;
 }
