@@ -129,14 +129,14 @@ export default function Home() {
 
       {/* Legal (placeholders para anclas) */}
       <section id="privacidad" className="container-app py-12">
-        <div className="card p-6">
+        <div className="card p-6 rounded-lg">
           <h3 className="text-lg font-semibold">Aviso de Privacidad</h3>
           <p className="muted mt-2">Aquí irá tu texto de privacidad. Lo separamos luego en su propia página.</p>
         </div>
       </section>
 
       <section id="terminos" className="container-app py-12">
-        <div className="card p-6">
+        <div className="card p-6 rounded-lg">
           <h3 className="text-lg font-semibold">Términos y Condiciones</h3>
           <p className="muted mt-2">Aquí irá tu texto de términos. También lo separamos después.</p>
         </div>
