@@ -1,18 +1,33 @@
 import { ArrowRight, ShieldCheck, Wallet, Repeat, LineChart, Sparkles, Apple, Smartphone } from 'lucide-react'
+import React, { useState } from "react";
+import TermsAndConditions from "../components/TermsAndConditions";
+import PrivacyPolicy from '../components/PrivacyPolicy';
+import { AnimatePresence, motion } from 'framer-motion'
+import { Info, FileText } from 'lucide-react'
 
 export default function Home() {
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+
   return (
     <main>
       {/* Hero */}
-      <section className="relative overflow-hidden">
+      <motion.section
+        className="relative overflow-hidden"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+      >
         {/* Glow sutil del primario */}
         <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-primary/10 to-transparent dark:from-primary/20" />
 
         <div className="container-app py-16 sm:py-24">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="badge mb-4">Nuevo</span>
+            <span className="badge mb-4 flex items-center justify-center gap-2">
+              <Sparkles size={16} /> Nuevo
+            </span>
             <h1 className="text5xl sm:text-4xl font-extrabold tracking-tight">
-              Controla tus ingresos <span className="text-primary">sin complicarte</span>
+              Controla tus finanzas <span className="text-primary">sin complicarte</span>
             </h1>
             <p className="mt-4 text-lg text-content/80">
               Subcuentas, recurrentes, historiales, monedas y más. Todo en una sola App,
@@ -31,12 +46,21 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Features */}
-      <section id="features" className="container-app py-12">
+      <motion.section
+        id="features"
+        className="container-app py-12"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
         <div className="mx-auto max-w-3xl text-center mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold">Todo lo que necesitas</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold flex items-center justify-center gap-2">
+            <LineChart size={20} /> Todo lo que necesitas
+          </h2>
           <p className="muted mt-2">Organiza, automatiza y entiende tus finanzas.</p>
         </div>
 
@@ -60,14 +84,23 @@ export default function Home() {
             Tus datos disponibles donde los necesites.
           </Feature>
         </div>
-      </section>
+      </motion.section>
 
       {/* Descargas */}
-      <section id="descargas" className="container-app py-12">
+      <motion.section
+        id="descargas"
+        className="container-app py-12"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, delay: 0.3 }}
+      >
         <div className="card p-6 sm:p-8 rounded-lg">
           <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="text-xl font-semibold">Descarga la app</h3>
+              <h3 className="text-xl font-semibold flex items-center gap-2">
+                <Smartphone size={18} /> Descarga la app
+              </h3>
               <p className="muted mt-1">
                 Disponible para iOS y Android. Próximamente versión escritorio.
               </p>
@@ -82,13 +115,22 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Soporte */}
-      <section id="soporte" className="container-app py-12">
+      <motion.section
+        id="soporte"
+        className="container-app py-12"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, delay: 0.4 }}
+      >
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="card p-6 rounded-lg">
-            <h3 className="text-lg font-semibold">¿Necesitas ayuda?</h3>
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Info size={18} /> ¿Necesitas ayuda?
+            </h3>
             <p className="muted mt-1">
               Levanta un reporte y nuestro equipo te contactará.
             </p>
@@ -102,7 +144,9 @@ export default function Home() {
           </div>
 
           <div className="card p-6 rounded-lg">
-            <h3 className="text-lg font-semibold">Preguntas frecuentes</h3>
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <FileText size={18} /> Preguntas frecuentes
+            </h3>
             <ul className="mt-4 space-y-3">
               <li>
                 <details className="rounded-lg bg-white/60 p-3 dark:bg-white/5">
@@ -125,20 +169,68 @@ export default function Home() {
             </ul>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Legal (placeholders para anclas) */}
-      <section id="privacidad" className="container-app py-12">
+      <section id="privacidad" className="container-app py-3">
         <div className="card p-6 rounded-lg">
-          <h3 className="text-lg font-semibold">Aviso de Privacidad</h3>
-          <p className="muted mt-2">Aquí irá tu texto de privacidad. Lo separamos luego en su propia página.</p>
+          <div className="flex items-center justify-between">
+            <span className="text-lg font-semibold flex items-center gap-2">
+              <ShieldCheck size={18} /> Aviso de Privacidad
+            </span>
+            <button
+              className="btn btn-sm btn-ghost"
+              onClick={() => setShowPrivacy((prev) => !prev)}
+              aria-expanded={showPrivacy}
+            >
+              {showPrivacy ? "Cerrar" : "Ver"}
+            </button>
+          </div>
+          <AnimatePresence>
+            {showPrivacy ? (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <PrivacyPolicy />
+              </motion.div>
+            ) : (
+              <p className="muted mt-2">Haz clic en "Ver" para ver el aviso de privacidad.</p>
+            )}
+          </AnimatePresence>
         </div>
       </section>
 
-      <section id="terminos" className="container-app py-12">
+      <section id="terminos" className="container-app py-6">
         <div className="card p-6 rounded-lg">
-          <h3 className="text-lg font-semibold">Términos y Condiciones</h3>
-          <p className="muted mt-2">Aquí irá tu texto de términos. También lo separamos después.</p>
+          <div className="flex items-center justify-between">
+            <span className="text-lg font-semibold flex items-center gap-2">
+              <FileText size={18} /> Términos y Condiciones
+            </span>
+            <button
+              className="btn btn-sm btn-ghost"
+              onClick={() => setShowTerms((prev) => !prev)}
+              aria-expanded={showTerms}
+            >
+              {showTerms ? "Cerrar" : "Ver"}
+            </button>
+          </div>
+          <AnimatePresence>
+            {showTerms ? (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <TermsAndConditions />
+              </motion.div>
+            ) : (
+              <p className="muted mt-2">Haz clic en "Ver" para ver los términos y condiciones.</p>
+            )}
+          </AnimatePresence>
         </div>
       </section>
     </main>
