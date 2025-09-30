@@ -16,4 +16,3 @@ export function useTheme() {
 
     return { theme, setTheme, toggle }
 }
-// commit
