@@ -1,0 +1,49 @@
+<svg width="1170" height="2532" viewBox="0 0 1170 2532" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Fondo principal -->
+<rect width="1170" height="2532" fill="#000818"/>
+
+<!-- Status bar -->
+<rect x="0" y="0" width="1170" height="150" fill="#000000"/>
+<circle cx="585" cy="75" r="35" fill="#FFFFFF"/>
+<rect x="100" y="50" width="60" height="50" rx="8" fill="#34C759"/>
+<text x="130" y="85" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="600" fill="#FFFFFF" text-anchor="middle">100%</text>
+
+<!-- Dynamic Island simulado -->
+<rect x="485" y="50" width="200" height="50" rx="25" fill="#1C1C1E"/>
+
+<!-- Header LitFinance -->
+<text x="585" y="300" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="48" font-weight="700" fill="#FFFFFF" text-anchor="middle">LitFinance</text>
+<text x="585" y="350" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" fill="#94A3A8" text-anchor="middle">Finanzas Inteligentes</text>
+
+<!-- Saldo principal -->
+<rect x="100" y="450" width="970" height="200" rx="20" fill="#0F9FF5" fill-opacity="0.1"/>
+<text x="150" y="500" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#94A3A8">Saldo Total</text>
+<text x="150" y="550" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="42" font-weight="700" fill="#FFFFFF">$12,345.67</text>
+<text x="150" y="590" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" fill="#34C759">+2.5% este mes</text>
+
+<!-- Círculo principal de datos -->
+<circle cx="585" cy="1000" r="180" fill="#0F9FF5" fill-opacity="0.1" stroke="#0F9FF5" stroke-width="4"/>
+<circle cx="585" cy="1000" r="120" fill="#0F9FF5" fill-opacity="0.3"/>
+<circle cx="585" cy="1000" r="40" fill="#0F9FF5"/>
+<text x="585" y="1010" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">75%</text>
+
+<!-- Botón principal -->
+<rect x="200" y="1300" width="770" height="80" rx="20" fill="#0F9FF5"/>
+<text x="585" y="1350" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF" text-anchor="middle">Comenzar Ahora</text>
+
+<!-- Tarjetas de funciones -->
+<rect x="100" y="1450" width="440" height="150" rx="16" fill="#1C1C1E"/>
+<text x="130" y="1490" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">Subcuentas</text>
+<text x="130" y="1520" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="700" fill="#0F9FF5">5 activas</text>
+
+<rect x="630" y="1450" width="440" height="150" rx="16" fill="#1C1C1E"/>
+<text x="660" y="1490" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">Ahorros</text>
+<text x="660" y="1520" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="700" fill="#34C759">$3,456</text>
+
+<!-- Footer info -->
+<text x="585" y="2200" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="500" fill="#FFFFFF" text-anchor="middle">Gestión Inteligente</text>
+<text x="585" y="2240" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#94A3A8" text-anchor="middle">de tus Finanzas Personales</text>
+
+<!-- Indicador de home -->
+<rect x="470" y="2400" width="230" height="6" rx="3" fill="#FFFFFF" fill-opacity="0.6"/>
+</svg>
