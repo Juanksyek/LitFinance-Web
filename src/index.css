@@ -25,13 +25,20 @@
 }
 
 /* ====== Base de app ====== */
-html,
-body,
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  height: 100%;
+  @apply bg-bg text-content antialiased;
+  overflow-x: hidden;
+}
+
 #root {
   height: 100%;
-}
-body {
-  @apply bg-bg text-content antialiased;
+  min-height: 100vh;
 }
 
 /* Helpers reusables */
