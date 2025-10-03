@@ -1,121 +1,91 @@
-import { ArrowRight, ShieldCheck, Wallet, Repeat, LineChart, Sparkles, Apple, Smartphone } from 'lucide-react'
-import React, { useState } from "react";
+import { ShieldCheck } from 'lucide-react'
+import { useState } from "react";
 import TermsAndConditions from "../components/TermsAndConditions";
 import PrivacyPolicy from '../components/PrivacyPolicy';
 import { AnimatePresence, motion } from 'framer-motion'
 import { Info, FileText } from 'lucide-react'
 
+// New components
+import Hero3D from '../components/Hero3D'
+import AppGallery from '../components/AppGallery'
+import ModernFeatures from '../components/ModernFeatures'
+import TechSpecs from '../components/TechSpecs'
+import Testimonials from '../components/Testimonials'
+import DownloadSection from '../components/DownloadSection'
+
 export default function Home() {
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
+  
+  // Estado del formulario de soporte (versión simplificada)
+  const [reportForm, setReportForm] = useState({
+    email: '',
+    asunto: '',
+    descripcion: ''
+  });
+  const [ticketId, setTicketId] = useState<string>('');
+
+  const handleReportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validación básica
+    if (!reportForm.email || !reportForm.asunto || !reportForm.descripcion) {
+      alert('Por favor, completa todos los campos');
+      return;
+    }
+
+    try {
+      // Generar ID temporal
+      const tempId = 'RPT-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+      setTicketId(tempId);
+      alert(`¡Mensaje enviado! ID de referencia: ${tempId}`);
+      
+      // Limpiar formulario
+      setReportForm({
+        email: '',
+        asunto: '',
+        descripcion: ''
+      });
+    } catch {
+      alert('Error al enviar el mensaje. Intenta más tarde.');
+    }
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setReportForm(prev => ({ ...prev, [field]: value }));
+  };
 
   return (
     <main>
-      {/* Hero */}
-      <motion.section
-        className="relative overflow-hidden"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-      >
-        {/* Glow sutil del primario */}
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-primary/10 to-transparent dark:from-primary/20" />
+      {/* New Hero 3D */}
+      <Hero3D />
 
-        <div className="container-app py-16 sm:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="badge mb-4 flex items-center justify-center gap-2">
-              <Sparkles size={16} /> Nuevo
-            </span>
-            <h1 className="text5xl sm:text-4xl font-extrabold tracking-tight">
-              Controla tus finanzas <span className="text-primary">sin complicarte</span>
-            </h1>
-            <p className="mt-4 text-lg text-content/80">
-              Subcuentas, recurrentes, historiales, monedas y más. Todo en una sola App,
-              sencilla y segura.
-            </p>
+      {/* App Gallery */}
+      <section id="gallery">
+        <AppGallery />
+      </section>
 
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <a href="#descargas" className="btn btn-primary">
-                Empieza ahora <ArrowRight size={16} />
-              </a>
-              <a href="#features" className="btn btn-ghost">Ver características</a>
-            </div>
+      {/* Modern Features - Enhanced version */}
+      <section id="features">
+        <ModernFeatures />
+      </section>
 
-            <div className="mt-6 text-xs uppercase tracking-wider text-muted">
-              Hecho con cariño, de México para el mundo
-            </div>
-          </div>
-        </div>
-      </motion.section>
+      {/* Tech Specs */}
+      <section id="specs">
+        <TechSpecs />
+      </section>
 
-      {/* Features */}
-      <motion.section
-        id="features"
-        className="container-app py-12"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7, delay: 0.2 }}
-      >
-        <div className="mx-auto max-w-3xl text-center mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold flex items-center justify-center gap-2">
-            <LineChart size={20} /> Todo lo que necesitas
-          </h2>
-          <p className="muted mt-2">Organiza, automatiza y entiende tus finanzas.</p>
-        </div>
+      {/* Testimonials */}
+      <section id="testimonials">
+        <Testimonials />
+      </section>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <Feature icon={<Wallet className="h-5 w-5" />} title="Subcuentas">
-            Crea espacios para metas: Ahorro, Viaje, Renta… cada una con su saldo e historial.
-          </Feature>
-          <Feature icon={<Repeat className="h-5 w-5" />} title="Pagos recurrentes">
-            Programa servicios (Netflix, Spotify, etc.) y recibe recordatorios inteligentes.
-          </Feature>
-          <Feature icon={<LineChart className="h-5 w-5" />} title="Reportes claros">
-            Filtra por periodo, concepto y moneda. Visualiza ingresos/egresos al instante.
-          </Feature>
-          <Feature icon={<ShieldCheck className="h-5 w-5" />} title="Seguridad primero">
-            Cifrado en tránsito y buenas prácticas desde el diseño.
-          </Feature>
-          <Feature icon={<Sparkles className="h-5 w-5" />} title="Rápido y simple">
-            Interfaz ligera, mínima fricción, experiencia fluida.
-          </Feature>
-          <Feature icon={<Repeat className="h-5 w-5 rotate-45" />} title="Sync multi-dispositivo">
-            Tus datos disponibles donde los necesites.
-          </Feature>
-        </div>
-      </motion.section>
 
-      {/* Descargas */}
-      <motion.section
-        id="descargas"
-        className="container-app py-12"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7, delay: 0.3 }}
-      >
-        <div className="card p-6 sm:p-8 rounded-lg">
-          <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="text-xl font-semibold flex items-center gap-2">
-                <Smartphone size={18} /> Descarga la app
-              </h3>
-              <p className="muted mt-1">
-                Disponible para iOS y Android. Próximamente versión escritorio.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <a className="btn btn-primary" href="#">
-                <Apple size={16} /> App Store
-              </a>
-              <a className="btn btn-ghost" href="#">
-                <Smartphone size={16} /> Google Play
-              </a>
-            </div>
-          </div>
-        </div>
-      </motion.section>
+
+      {/* Enhanced Download Section */}
+      <section id="descargas">
+        <DownloadSection />
+      </section>
 
       {/* Soporte */}
       <motion.section
@@ -135,11 +105,50 @@ export default function Home() {
               Levanta un reporte y nuestro equipo te contactará.
             </p>
 
-            <form className="mt-4 grid gap-3">
-              <input className="w-full rounded-lg border border-black/10 bg-white/70 p-3 dark:bg-white/5 dark:border-white/10" placeholder="Tu correo" type="email" />
-              <input className="w-full rounded-lg border border-black/10 bg-white/70 p-3 dark:bg-white/5 dark:border-white/10" placeholder="Asunto" />
-              <textarea className="min-h-[120px] w-full rounded-lg border border-black/10 bg-white/70 p-3 dark:bg-white/5 dark:border-white/10" placeholder="Describe tu problema..." />
-              <button type="button" className="btn btn-primary self-start">Enviar</button>
+            <form className="mt-4 grid gap-3" onSubmit={handleReportSubmit}>
+              <input 
+                className="w-full rounded-lg border border-black/10 bg-white/70 p-3 dark:bg-white/5 dark:border-white/10" 
+                placeholder="Tu correo" 
+                type="email"
+                value={reportForm.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                required
+              />
+              <input 
+                className="w-full rounded-lg border border-black/10 bg-white/70 p-3 dark:bg-white/5 dark:border-white/10" 
+                placeholder="Asunto"
+                value={reportForm.asunto}
+                onChange={(e) => handleInputChange('asunto', e.target.value)}
+                required
+              />
+              <textarea 
+                className="min-h-[120px] w-full rounded-lg border border-black/10 bg-white/70 p-3 dark:bg-white/5 dark:border-white/10" 
+                placeholder="Describe tu problema..."
+                value={reportForm.descripcion}
+                onChange={(e) => handleInputChange('descripcion', e.target.value)}
+                required
+              />
+              <button 
+                type="submit" 
+                className="btn btn-primary self-start" 
+                disabled={false}
+              >
+                📤 Enviar Mensaje
+              </button>
+              
+              {ticketId && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
+                >
+                  <p className="text-green-800 dark:text-green-200 text-sm">
+                    <strong>✅ Reporte enviado exitosamente!</strong><br/>
+                    Tu ticket ID es: <code className="bg-green-100 dark:bg-green-800 px-2 py-1 rounded font-mono text-xs">{ticketId}</code><br/>
+                    Guárdalo para consultar el estado de tu reporte.
+                  </p>
+                </motion.div>
+              )}
             </form>
           </div>
 
@@ -237,14 +246,4 @@ export default function Home() {
   )
 }
 
-function Feature({ icon, title, children }: { icon: React.ReactNode, title: string, children: React.ReactNode }) {
-  return (
-    <div className="card p-5 rounded-lg">
-      <div className="flex items-center gap-2 text-primary">
-        <div className="rounded-lg bg-primary/10 p-2 text-primary">{icon}</div>
-        <h3 className="font-semibold">{title}</h3>
-      </div>
-      <p className="mt-2 text-content/80">{children}</p>
-    </div>
-  )
-}
+
