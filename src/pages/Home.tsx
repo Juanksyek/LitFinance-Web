@@ -5,7 +5,6 @@ import PrivacyPolicy from '../components/PrivacyPolicy';
 import { AnimatePresence, motion } from 'framer-motion'
 import { Info, FileText } from 'lucide-react'
 
-// New components
 import Hero3D from '../components/Hero3D'
 import AppGallery from '../components/AppGallery'
 import ModernFeatures from '../components/ModernFeatures'
