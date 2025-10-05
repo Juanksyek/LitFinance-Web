@@ -10,7 +10,6 @@ export default function PhoneModel3D({
   onPhoneChange?: (phoneInfo: { name: string, brand: string }) => void
   manualRotation?: { x: number, y: number }
 }) {
-  // Información del iPhone fija
   const phoneInfo = useMemo(() => ({
     name: 'Android',
     brand: 'Próximamente iOS'
