@@ -16,7 +16,6 @@ export default function Home() {
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
   
-  // Estado del formulario de soporte (versión simplificada)
   const [reportForm, setReportForm] = useState({
     email: '',
     asunto: '',
