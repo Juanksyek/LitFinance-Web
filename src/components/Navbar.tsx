@@ -13,7 +13,6 @@ const AdminAccessButton = () => {
     localStorage.setItem('litfinance_admin_route', dynamicRoute);
     localStorage.setItem('litfinance_admin_token', 'temp-access-' + Date.now());
     
-    // Navegar al dashboard con ruta dinámica
     window.location.href = dynamicRoute;
   };
 
