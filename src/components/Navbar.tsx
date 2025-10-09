@@ -4,7 +4,6 @@ import ThemeToggle from './ThemeToggle'
 import { Download, Menu, X, Smartphone, Shield } from 'lucide-react'
 import { useAdminAccess } from '../hooks/useAdminAccess'
 
-// Componente simple de acceso al dashboard
 const AdminAccessButton = () => {
   const { showAdminAccess, generateDynamicRoute, closeAdminAccess } = useAdminAccess();
 

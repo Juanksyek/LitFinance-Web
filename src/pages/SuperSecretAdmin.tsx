@@ -1,4 +1,3 @@
-// 🔐 Panel Súper Secreto de Administración - LitFinance
 import React, { useState, useEffect } from 'react';
 import { AdminPanel } from '../components/AdminPanel';
 import { authService } from '../services/authService';
