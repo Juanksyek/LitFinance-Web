@@ -26,7 +26,6 @@ export default function Home() {
   const handleReportSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validación básica
     if (!reportForm.email || !reportForm.asunto || !reportForm.descripcion) {
       alert('Por favor, completa todos los campos');
       return;
