@@ -120,7 +120,6 @@ function LightRig({
 type Props = {
   screenImage?: string
   manualRotation?: { x: number; y: number }
-  /** Config inicial del rig de luces (opcional) */
   light?: Partial<LightRigProps>
 }
 
