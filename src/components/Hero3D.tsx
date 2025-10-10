@@ -11,7 +11,6 @@ export default function Hero3D() {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const { scrollY } = useScroll()
   
-  // Parallax effects
   const y = useTransform(scrollY, [0, 500], [0, -150])
   const opacity = useTransform(scrollY, [0, 300], [1, 0])
 
