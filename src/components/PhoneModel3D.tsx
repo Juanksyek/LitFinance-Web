@@ -15,7 +15,6 @@ export default function PhoneModel3D({
     brand: 'Próximamente iOS'
   }), [])
 
-  // Notificar información del teléfono una sola vez
   useEffect(() => {
     if (onPhoneChange) {
       onPhoneChange(phoneInfo)
