@@ -32,7 +32,6 @@ export default function Home() {
     }
 
     try {
-      // Generar ID temporal
       const tempId = 'RPT-' + Math.random().toString(36).substr(2, 9).toUpperCase();
       setTicketId(tempId);
       alert(`¡Mensaje enviado! ID de referencia: ${tempId}`);
