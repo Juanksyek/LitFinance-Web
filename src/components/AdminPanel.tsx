@@ -1,4 +1,3 @@
-// 🛡️ Panel de Administración de Reportes - LitFinance
 import React, { useState, useEffect, useCallback } from 'react';
 import type { 
   WebReport, 
