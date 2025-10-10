@@ -1,18 +1,6 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { 
-  Wallet, 
-  Repeat, 
-  LineChart, 
-  ShieldCheck, 
-  Sparkles, 
-  Zap,
-  Globe,
-  Smartphone,
-  Users,
-  Star,
-  Headphones
-} from 'lucide-react'
+import { Wallet, Repeat, LineChart, ShieldCheck, Sparkles, Zap, Globe, Smartphone, Users, Star, Headphones } from 'lucide-react'
 
 const features = [
   {

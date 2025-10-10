@@ -1,4 +1,3 @@
-// 🔐 Componente Protector de Rutas Dinámicas
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { dynamicRouteService } from '../services/dynamicRouteService';

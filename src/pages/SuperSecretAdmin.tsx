@@ -13,7 +13,6 @@ const SuperSecretAdminPage: React.FC = () => {
   const MAX_ATTEMPTS = 3;
 
   useEffect(() => {
-    // Verificar si ya está autenticado
     if (authService.isAuthenticated()) {
       setIsAuthenticated(true);
     } else {
