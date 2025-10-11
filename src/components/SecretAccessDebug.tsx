@@ -1,4 +1,3 @@
-// 🔧 Componente de Debug para el Sistema de Acceso Secreto
 import React, { useState, useEffect } from 'react';
 
 const SECRET_SEQUENCE = 'admin2025litfinance';
