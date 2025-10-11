@@ -1,24 +1,6 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { 
-  Apple, 
-  Smartphone, 
-  Monitor, 
-  Shield, 
-  Zap, 
-  Globe,
-  Tablet,
-  HardDrive,
-  Lock,
-  User,
-  Cloud,
-  Database,
-  RefreshCw,
-  Battery,
-  CreditCard,
-  BarChart3,
-  MessageSquare
-} from 'lucide-react'
+import { Apple, Smartphone, Monitor, Shield, Zap, Globe, Tablet, HardDrive, Lock, User, Cloud, Database, RefreshCw, Battery, CreditCard, BarChart3, MessageSquare } from 'lucide-react'
 
 export default function TechSpecs() {
   const ref = useRef(null)
