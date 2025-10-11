@@ -1,4 +1,3 @@
-// 🔐 Componente de Acceso Secreto - Botón Flotante
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Clock, X } from 'lucide-react';

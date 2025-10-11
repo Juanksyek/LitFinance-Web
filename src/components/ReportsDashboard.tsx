@@ -9,7 +9,6 @@ export const ReportsDashboard: React.FC = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Verificar si hay token temporal
     const token = localStorage.getItem('litfinance_admin_token');
     if (token && token.startsWith('temp-access-')) {
       const timestamp = parseInt(token.split('-')[2]);
