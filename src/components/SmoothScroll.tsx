@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 
 export default function SmoothScroll() {
   useEffect(() => {
-    // Smooth scrolling for anchor links
     const handleClick = (e: Event) => {
       const target = e.target as HTMLAnchorElement
       if (target.hash) {
