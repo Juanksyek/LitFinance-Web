@@ -61,7 +61,6 @@ export default function Testimonials() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
 
-  // Auto-play functionality
   useEffect(() => {
     if (!autoPlay) return
 
