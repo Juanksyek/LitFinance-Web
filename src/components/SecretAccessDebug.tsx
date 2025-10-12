@@ -11,7 +11,6 @@ export const SecretAccessDebug: React.FC = () => {
     const handleKeyPress = (event: KeyboardEvent) => {
       const char = event.key.toLowerCase();
       
-      // Actualizar historial
       setKeyHistory(prev => [...prev.slice(-10), char]);
       
       setSequenceBuffer(prev => {
