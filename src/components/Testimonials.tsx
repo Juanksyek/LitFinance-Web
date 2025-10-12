@@ -83,7 +83,6 @@ export default function Testimonials() {
 
   return (
     <section ref={ref} className="py-24 relative overflow-hidden">
-      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/5" />
       
       <div className="container-app">
