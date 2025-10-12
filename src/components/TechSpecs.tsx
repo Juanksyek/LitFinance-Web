@@ -132,7 +132,6 @@ export default function TechSpecs() {
           </div>
         </motion.div>
 
-        {/* Requirements */}
         <motion.div 
           className="max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 40 }}

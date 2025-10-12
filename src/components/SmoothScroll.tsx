@@ -16,7 +16,6 @@ export default function SmoothScroll() {
       }
     }
 
-    // Add click listeners to all anchor links
     const links = document.querySelectorAll('a[href^="#"]')
     links.forEach(link => {
       link.addEventListener('click', handleClick)
