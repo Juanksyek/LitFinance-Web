@@ -73,7 +73,6 @@ export const SecretAccessButton: React.FC<SecretAccessButtonProps> = ({
               </p>
             </div>
 
-            {/* Efecto de brillo animado */}
             <motion.div
               className="absolute inset-0 rounded-2xl"
               style={{
