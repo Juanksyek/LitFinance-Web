@@ -14,7 +14,6 @@ export const ReportsDashboard: React.FC = () => {
       const timestamp = parseInt(token.split('-')[2]);
       const now = Date.now();
       
-      // Token válido por 1 hora
       if (now - timestamp < 60 * 60 * 1000) {
         setIsAuthenticated(true);
         return;
