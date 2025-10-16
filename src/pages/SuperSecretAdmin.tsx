@@ -43,7 +43,7 @@ const SuperSecretAdminPage: React.FC = () => {
         const mockToken = btoa(JSON.stringify({
           email: credentials.email,
           role: 'admin',
-          exp: Date.now() + (24 * 60 * 60 * 1000) // 24 horas
+          exp: Date.now() + (24 * 60 * 60 * 1000)
         }));
         
         localStorage.setItem('litfinance_admin_token', mockToken);
