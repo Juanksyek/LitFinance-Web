@@ -21,7 +21,6 @@ export default function SmoothScroll() {
       link.addEventListener('click', handleClick)
     })
 
-    // Cleanup
     return () => {
       links.forEach(link => {
         link.removeEventListener('click', handleClick)
