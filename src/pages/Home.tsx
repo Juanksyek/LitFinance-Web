@@ -36,7 +36,6 @@ export default function Home() {
       setTicketId(tempId);
       alert(`¡Mensaje enviado! ID de referencia: ${tempId}`);
       
-      // Limpiar formulario
       setReportForm({
         email: '',
         asunto: '',
