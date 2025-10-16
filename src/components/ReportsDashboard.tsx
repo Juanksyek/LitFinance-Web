@@ -30,7 +30,6 @@ export const ReportsDashboard: React.FC = () => {
     setLoading(true);
     setError('');
 
-    // Simular autenticación
     if (credentials.email === 'elgalleto12393@gmail.com' && credentials.password === 'Admin123') {
       localStorage.setItem('litfinance_admin_token', 'temp-access-' + Date.now());
       setIsAuthenticated(true);
