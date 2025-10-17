@@ -333,5 +333,3 @@ export default function IPhone14ProModelGLB({ screenImage, manualRotation, light
 }
 
 useGLTF.preload('/models/iphone_14_pro.glb')
-// commit
-
