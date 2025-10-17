@@ -52,7 +52,6 @@ export default function Home() {
 
   return (
     <main>
-      {/* New Hero 3D */}
       <Hero3D />
 
       {/* App Gallery */}
