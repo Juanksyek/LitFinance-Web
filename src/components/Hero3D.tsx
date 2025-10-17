@@ -321,4 +321,3 @@ export default function Hero3D() {
     </motion.section>
   )
 }
-// commit
