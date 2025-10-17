@@ -33,7 +33,6 @@ const SuperSecretAdminPage: React.FC = () => {
     setError('');
 
     try {
-      // Usar mock authentication para evitar problemas de CORS
       const mockAuth = 
         credentials.email === 'elgalleto12393@gmail.com' && 
         credentials.password === 'Admin123';
