@@ -1,4 +1,3 @@
-// 📋 Componente de Reportes Web - LitFinance
 import React, { useState, useEffect } from 'react';
 import type { 
   CreateWebReportRequest, 
