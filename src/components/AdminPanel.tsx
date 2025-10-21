@@ -1,14 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { 
-  WebReport, 
-  SecurityStats, 
-  WebReportStatus
-} from '../types/reports';
-import { 
-  WEB_STATUS_LABELS, 
-  STATUS_COLORS,
-  WEB_REPORT_STATUSES 
-} from '../constants/reports';
+import type { WebReport, SecurityStats, WebReportStatus } from '../types/reports';
+import { WEB_STATUS_LABELS, STATUS_COLORS, WEB_REPORT_STATUSES } from '../constants/reports';
 import { webReportsService } from '../services/webReportsService';
 import { authService } from '../services/authService';
 
