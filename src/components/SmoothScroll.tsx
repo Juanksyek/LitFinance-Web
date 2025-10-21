@@ -30,3 +30,4 @@ export default function SmoothScroll() {
 
   return null
 }
+// chore: comment 
