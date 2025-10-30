@@ -68,7 +68,6 @@ const SuperSecretAdminPage: React.FC = () => {
     setCredentials({ email: '', password: '' });
     setAttempts(0);
     
-    // Redirigir al inicio después del logout
     setTimeout(() => {
       window.location.href = '/';
     }, 1000);
