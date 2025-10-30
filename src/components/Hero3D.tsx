@@ -16,7 +16,6 @@ export default function Hero3D() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      // Si estamos arrastrando, actualizar la rotación manual
       if (isDragging) {
         const deltaX = e.clientX - dragStart.x
         const deltaY = e.clientY - dragStart.y
