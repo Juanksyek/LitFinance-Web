@@ -116,7 +116,6 @@ export const DynamicRouteGuard: React.FC = () => {
     );
   }
 
-  // Ruta válida - mostrar el panel admin con temporizador
   return (
     <div className="relative">
       {/* Barra de tiempo restante */}
