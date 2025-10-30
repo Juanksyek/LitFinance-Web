@@ -20,7 +20,6 @@ export const ReportsDashboard: React.FC = () => {
       }
     }
     
-    // Si no hay token válido, limpiar
     localStorage.removeItem('litfinance_admin_token');
     localStorage.removeItem('litfinance_admin_route');
   }, []);

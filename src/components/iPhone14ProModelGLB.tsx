@@ -265,7 +265,6 @@ export default function IPhone14ProModelGLB({ screenImage, manualRotation, light
     g.quaternion.slerp(targetQuat, 0.12)
   })
 
-  // Valores por defecto del rig + override desde prop `light`
   const lightCfg: LightRigProps = {
     color: '#ffffff',
     intensity: 2.2,
