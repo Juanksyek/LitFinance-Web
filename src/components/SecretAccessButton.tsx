@@ -64,7 +64,7 @@ export const SecretAccessButton: React.FC<SecretAccessButtonProps> = ({
                 onClick={onAccess}
                 className="bg-white/20 hover:bg-white/30 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 border border-white/30 backdrop-blur-sm"
               >
-                🔓 Acceder al Panel
+                Acceder al Panel
               </motion.button>
 
               {/* Mensaje de advertencia */}
