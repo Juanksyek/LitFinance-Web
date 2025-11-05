@@ -71,7 +71,6 @@ export const DynamicRouteGuard: React.FC = () => {
     );
   }
 
-  // Pantalla de error para ruta inválida
   if (!isValidRoute) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-900 to-slate-900 flex items-center justify-center">

@@ -115,8 +115,6 @@ function LightRig({
   )
 }
 
-/* --------------------------- iPhone + materiales --------------------------- */
-
 type Props = {
   screenImage?: string
   manualRotation?: { x: number; y: number }

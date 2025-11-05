@@ -130,7 +130,6 @@ export const ReportsDashboard: React.FC = () => {
     );
   }
 
-  // Dashboard principal
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}

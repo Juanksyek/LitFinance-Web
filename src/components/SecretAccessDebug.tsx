@@ -30,7 +30,7 @@ export const SecretAccessDebug: React.FC = () => {
     return () => document.removeEventListener('keydown', handleKeyPress);
   }, []);
 
-  if (!import.meta.env.DEV) return null; // Solo en desarrollo
+  if (!import.meta.env.DEV) return null;
 
   return (
     <div 
