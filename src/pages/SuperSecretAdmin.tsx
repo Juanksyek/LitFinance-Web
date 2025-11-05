@@ -38,7 +38,6 @@ const SuperSecretAdminPage: React.FC = () => {
         credentials.password === 'Admin123';
 
       if (mockAuth) {
-        // Simular token JWT
         const mockToken = btoa(JSON.stringify({
           email: credentials.email,
           role: 'admin',
