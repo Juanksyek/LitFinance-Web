@@ -174,7 +174,6 @@ export default function ModernFeatures() {
           ))}
         </motion.div>
 
-        {/* CTA Section */}
         <motion.div 
           className="text-center"
           initial={{ opacity: 0, y: 40 }}
