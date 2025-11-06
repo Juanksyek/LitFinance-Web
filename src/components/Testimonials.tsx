@@ -237,7 +237,6 @@ export default function Testimonials() {
           ))}
         </motion.div>
 
-        {/* Social Proof */}
         <motion.div 
           className="text-center mt-16"
           initial={{ opacity: 0, y: 20 }}
