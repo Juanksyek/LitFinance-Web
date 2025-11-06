@@ -173,7 +173,6 @@ export default function TechSpecs() {
           </div>
         </motion.div>
 
-        {/* Security Badges */}
         <motion.div 
           className="flex justify-center items-center gap-8 mt-16"
           initial={{ opacity: 0, y: 40 }}
