@@ -51,7 +51,6 @@ export const DynamicRouteGuard: React.FC = () => {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  // Pantalla de validación
   if (isValidating) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
