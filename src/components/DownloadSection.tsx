@@ -8,10 +8,9 @@ export default function DownloadSection() {
 
   return (
     <section ref={ref} className="py-24 relative overflow-hidden">
-ssss      <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent" />
+     <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent" />
       
       <div className="container-app">
-        {/* Header */}
         <motion.div 
           className="text-center mb-16"
           initial={{ opacity: 0, y: 40 }}
