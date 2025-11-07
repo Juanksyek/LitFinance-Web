@@ -67,7 +67,6 @@ export const SecretAccessButton: React.FC<SecretAccessButtonProps> = ({
                 Acceder al Panel
               </motion.button>
 
-              {/* Mensaje de advertencia */}
               <p className="text-white/80 text-xs text-center max-w-40">
                 Ruta temporal generada. Expira automáticamente.
               </p>
