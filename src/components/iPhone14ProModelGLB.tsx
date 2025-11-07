@@ -278,7 +278,6 @@ export default function IPhone14ProModelGLB({ screenImage, manualRotation, light
 
   return (
     <>
-      {/* Rig de luces controlable */}
       <LightRig {...lightCfg} />
 
       {/* Modelo */}
