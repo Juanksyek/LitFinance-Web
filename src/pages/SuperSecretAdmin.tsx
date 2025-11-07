@@ -16,7 +16,6 @@ const SuperSecretAdminPage: React.FC = () => {
     if (authService.isAuthenticated()) {
       setIsAuthenticated(true);
     } else {
-      // Mostrar pantalla de login después de un breve delay
       setTimeout(() => setShowLogin(true), 1000);
     }
   }, []);
