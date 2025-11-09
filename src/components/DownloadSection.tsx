@@ -34,7 +34,6 @@ export default function DownloadSection() {
 
         {/* Main Download Cards */}
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
-          {/* iOS Card */}
           <motion.div
             className="relative group"
             initial={{ opacity: 0, y: 60 }}
