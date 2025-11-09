@@ -57,7 +57,6 @@ export const SecretAccessButton: React.FC<SecretAccessButtonProps> = ({
                 </span>
               </div>
 
-              {/* Botón de acceso */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
