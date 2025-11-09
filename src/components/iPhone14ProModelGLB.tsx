@@ -280,7 +280,6 @@ export default function IPhone14ProModelGLB({ screenImage, manualRotation, light
     <>
       <LightRig {...lightCfg} />
 
-      {/* Modelo */}
       <group ref={groupRef} scale={[40, 40, 40]}>
         <primitive object={clonedScene} />
 
