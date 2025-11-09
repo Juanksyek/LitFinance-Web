@@ -36,7 +36,6 @@ export const DynamicRouteGuard: React.FC = () => {
       const remaining = dynamicRouteService.getTimeRemaining();
       setTimeRemaining(remaining);
 
-      // Si expiró, redirigir
       if (remaining === 0) {
         navigate('/', { replace: true });
       }
