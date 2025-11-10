@@ -89,7 +89,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     if (score < 30) return '#10b981';
     if (score < 50) return '#f59e0b';
     if (score < 70) return '#f97316';
-    return '#ef4444'; // Rojo
+    return '#ef4444';
   };
 
   return (

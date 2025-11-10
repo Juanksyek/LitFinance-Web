@@ -42,7 +42,6 @@ export default function DownloadSection() {
           >
             <div className="absolute inset-0 bg-gradient-to-br from-gray-600 to-black rounded-3xl opacity-10 group-hover:opacity-20 transition-opacity" />
             <div className="relative p-8 bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/10 overflow-hidden">
-              {/* iOS Background pattern */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gray-500/10 to-transparent rounded-full blur-2xl" />
               
               <div className="relative z-10">
