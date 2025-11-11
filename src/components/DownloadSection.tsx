@@ -32,7 +32,6 @@ export default function DownloadSection() {
           </p>
         </motion.div>
 
-        {/* Main Download Cards */}
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
           <motion.div
             className="relative group"
