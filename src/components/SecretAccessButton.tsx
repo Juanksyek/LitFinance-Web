@@ -39,7 +39,6 @@ export const SecretAccessButton: React.FC<SecretAccessButtonProps> = ({
               <X size={12} />
             </button>
 
-            {/* Contenido principal */}
             <div className="flex flex-col items-center space-y-3">
               {/* Icono y título */}
               <div className="flex items-center space-x-2">

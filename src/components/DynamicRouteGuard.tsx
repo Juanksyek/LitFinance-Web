@@ -31,7 +31,6 @@ export const DynamicRouteGuard: React.FC = () => {
 
     validateRoute();
 
-    // Actualizar el tiempo restante cada segundo
     const interval = setInterval(() => {
       const remaining = dynamicRouteService.getTimeRemaining();
       setTimeRemaining(remaining);
