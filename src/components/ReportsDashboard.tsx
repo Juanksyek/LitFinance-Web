@@ -206,7 +206,6 @@ export const ReportsDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Tabla de reportes */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg">
           <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
