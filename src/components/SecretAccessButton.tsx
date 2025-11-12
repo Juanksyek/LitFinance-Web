@@ -48,7 +48,6 @@ export const SecretAccessButton: React.FC<SecretAccessButtonProps> = ({
                 </span>
               </div>
 
-              {/* Temporizador */}
               <div className="flex items-center space-x-2 bg-black/20 rounded-lg px-3 py-1">
                 <Clock className="w-4 h-4 text-yellow-300" />
                 <span className="text-yellow-300 font-mono text-sm">
