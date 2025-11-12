@@ -3,8 +3,6 @@ import { useFrame } from '@react-three/fiber'
 import { useGLTF, useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 
-/* ----------------------------- Light Rig inline ---------------------------- */
-
 type LightRigProps = {
   color?: string
   intensity?: number
