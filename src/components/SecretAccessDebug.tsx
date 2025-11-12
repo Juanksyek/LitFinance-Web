@@ -49,7 +49,7 @@ export const SecretAccessDebug: React.FC = () => {
       }}
     >
       <div style={{ marginBottom: '5px', fontWeight: 'bold' }}>
-        🔧 Debug: Acceso Secreto
+        Debug: Acceso Secreto
       </div>
       
       <div>
