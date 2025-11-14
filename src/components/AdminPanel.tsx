@@ -177,7 +177,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
 
           {/* Panel principal */}
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Filtros */}
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center gap-4">
                 <div>

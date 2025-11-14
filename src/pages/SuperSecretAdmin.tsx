@@ -216,7 +216,6 @@ const SuperSecretAdminPage: React.FC = () => {
     );
   }
 
-  // Panel de administración
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
