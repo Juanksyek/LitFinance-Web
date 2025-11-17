@@ -88,7 +88,6 @@ export default function DownloadSection() {
             </div>
           </motion.div>
 
-          {/* Android Card */}
           <motion.div
             className="relative group"
             initial={{ opacity: 0, y: 60 }}
