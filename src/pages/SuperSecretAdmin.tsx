@@ -188,7 +188,7 @@ const SuperSecretAdminPage: React.FC = () => {
                       Verificando...
                     </span>
                   ) : (
-                    '🔐 Acceder al Sistema'
+                    'Acceder al Sistema'
                   )}
                 </motion.button>
 

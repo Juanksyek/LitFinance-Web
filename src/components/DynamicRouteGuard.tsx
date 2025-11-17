@@ -21,7 +21,6 @@ export const DynamicRouteGuard: React.FC = () => {
       setTimeRemaining(remaining);
       setIsValidating(false);
 
-      // Si la ruta no es válida, redirigir al home después de mostrar error
       if (!isValid) {
         setTimeout(() => {
           navigate('/', { replace: true });

@@ -19,7 +19,7 @@ export const SecretAccessDebug: React.FC = () => {
         if (newBuffer === SECRET_SEQUENCE) {
           setIsActive(true);
           setTimeout(() => setIsActive(false), 3000);
-          console.log('🔐 SECUENCIA SECRETA ACTIVADA!');
+          console.log('SECUENCIA SECRETA ACTIVADA!');
         }
         
         return newBuffer;

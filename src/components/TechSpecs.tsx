@@ -142,7 +142,6 @@ export default function TechSpecs() {
             <h3 className="text-2xl font-bold mb-6 text-center">Requisitos del Sistema</h3>
             
             <div className="grid md:grid-cols-2 gap-8">
-              {/* iOS Requirements */}
               <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-4">
                   <Apple size={24} className="text-gray-700" />
