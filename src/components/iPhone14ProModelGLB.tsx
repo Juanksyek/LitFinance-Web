@@ -8,7 +8,7 @@ type LightRigProps = {
   intensity?: number
   radius?: number
   azimuth?: number
-  elevation?: number // grados (0 = horizonte, 90 = arriba)
+  elevation?: number
   enableKeys?: boolean
   shadows?: boolean
   helper?: boolean
