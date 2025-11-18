@@ -85,7 +85,7 @@ export const DynamicRouteGuard: React.FC = () => {
           </motion.div>
 
           <h1 className="text-2xl font-bold text-white mb-4">
-            🚫 Acceso Denegado
+            Acceso Denegado
           </h1>
           
           <p className="text-red-200 mb-6">
