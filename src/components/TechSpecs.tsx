@@ -155,7 +155,6 @@ export default function TechSpecs() {
                 </div>
               </div>
 
-              {/* Android Requirements */}
               <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-4">
                   <Smartphone size={24} className="text-green-600" />
