@@ -240,7 +240,7 @@ const SuperSecretAdminPage: React.FC = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            🚪 Cerrar Sesión
+            Cerrar Sesión
           </motion.button>
         </div>
       </div>

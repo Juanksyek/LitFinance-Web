@@ -130,7 +130,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
         <div className="flex-1 flex overflow-hidden">
           <div className="w-80 bg-gray-50 dark:bg-gray-900 p-6 overflow-y-auto border-r border-gray-200 dark:border-gray-700">
             <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-              📊 Estadísticas de Seguridad
+              Estadísticas de Seguridad
             </h2>
             
             {securityStats && (

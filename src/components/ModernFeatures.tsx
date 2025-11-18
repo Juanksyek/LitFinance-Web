@@ -148,7 +148,6 @@ export default function ModernFeatures() {
           ))}
         </div>
 
-        {/* Stats Section */}
         <motion.div 
           className="grid md:grid-cols-4 gap-8 mb-16"
           initial={{ opacity: 0, y: 40 }}

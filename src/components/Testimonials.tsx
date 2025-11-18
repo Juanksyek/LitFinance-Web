@@ -211,7 +211,6 @@ export default function Testimonials() {
           ))}
         </motion.div>
 
-        {/* Stats Row */}
         <motion.div 
           className="grid grid-cols-2 md:grid-cols-4 gap-8"
           initial={{ opacity: 0, y: 40 }}
