@@ -15,14 +15,6 @@ type LightRigProps = {
   target?: [number, number, number]
 }
 
-/**
- * Atajos (si enableKeys):
- *  J / L → azimut -/+ 5°
- *  I / K → elevación +/− 3°
- *  U / O → radio -/+ 0.2
- *  - / = → intensidad -/+ 0.2
- *  1/2/3 → presets (neutro / cálido / frío)
- */
 function LightRig({
   color = '#ffffff',
   intensity = 2.2,
