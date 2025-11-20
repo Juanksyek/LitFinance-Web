@@ -143,7 +143,6 @@ export const DynamicRouteGuard: React.FC = () => {
         />
       </motion.div>
 
-      {/* Contenido del panel admin */}
       <div className="pt-16">
         <SuperSecretAdminPage />
       </div>
