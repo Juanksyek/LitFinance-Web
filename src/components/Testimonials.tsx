@@ -188,7 +188,6 @@ export default function Testimonials() {
           </div>
         </motion.div>
 
-        {/* Testimonial Indicators */}
         <motion.div 
           className="flex justify-center gap-3 mb-16"
           initial={{ opacity: 0, y: 20 }}

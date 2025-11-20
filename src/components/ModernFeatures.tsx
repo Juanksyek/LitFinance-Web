@@ -137,7 +137,6 @@ export default function ModernFeatures() {
                   ))}
                 </div>
 
-                {/* Hover effect */}
                 <motion.div
                   className="absolute inset-0 rounded-3xl"
                   whileHover={{ scale: 1.02 }}

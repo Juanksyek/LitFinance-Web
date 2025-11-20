@@ -116,7 +116,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
               onClick={logout}
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
             >
-              🚪 Cerrar Sesión
+              Cerrar Sesión
             </button>
             <button
               onClick={onClose}

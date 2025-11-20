@@ -144,7 +144,6 @@ export default function DownloadSection() {
           </motion.div>
         </div>
 
-        {/* Features Row */}
         <motion.div 
           className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12"
           initial={{ opacity: 0, y: 40 }}
