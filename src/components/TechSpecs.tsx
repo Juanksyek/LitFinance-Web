@@ -103,7 +103,6 @@ export default function TechSpecs() {
           ))}
         </div>
 
-        {/* Platform Icons */}
         <motion.div 
           className="text-center mb-16"
           initial={{ opacity: 0, y: 40 }}
