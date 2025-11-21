@@ -170,7 +170,6 @@ export default function DownloadSection() {
           ))}
         </motion.div>
 
-        {/* Coming Soon */}
         <motion.div 
           className="text-center"
           initial={{ opacity: 0, y: 20 }}

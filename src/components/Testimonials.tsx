@@ -171,7 +171,6 @@ export default function Testimonials() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Navigation Arrows */}
             <button
               onClick={prevTestimonial}
               className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20 dark:border-white/10 hover:bg-primary hover:text-white transition-all duration-300"

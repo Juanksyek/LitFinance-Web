@@ -134,7 +134,6 @@ export const DynamicRouteGuard: React.FC = () => {
           </div>
         </div>
 
-        {/* Barra de progreso del tiempo */}
         <motion.div
           initial={{ width: "100%" }}
           animate={{ width: "0%" }}

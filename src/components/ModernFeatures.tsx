@@ -121,7 +121,6 @@ export default function ModernFeatures() {
                   {feature.description}
                 </p>
 
-                {/* Highlights */}
                 <div className="space-y-2">
                   {feature.highlights.map((highlight, i) => (
                     <motion.div
