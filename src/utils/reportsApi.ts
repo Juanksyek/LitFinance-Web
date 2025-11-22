@@ -1,14 +1,8 @@
 // 🌐 Utilidades de API para el Sistema de Reportes - LitFinance
 import type {
   CreateWebReportRequest,
-  WebReport,
   WebReportStatusResponse,
-  SecurityStats,
-  AuthCredentials,
-  AuthResponse,
-  ApiResponse,
-  PaginatedResponse,
-  WebReportStatus
+  ApiResponse
 } from '../types/reports';
 import { API_ENDPOINTS } from '../constants/reports';
 
@@ -71,52 +65,6 @@ class ReportsApiClient {
     }
   }
 
-  /**
-   * Hace una petición autenticada
-   */
-  private async authenticatedRequest<T>(
-    endpoint: string,
-    options: RequestInit = {},
-    token?: string
-  ): Promise<ApiResponse<T>> {
-    const authHeaders: Record<string, string> = {};
-    
-    if (token) {
-      authHeaders['Authorization'] = `Bearer ${token}`;
-    }
-
-    return this.request<T>(endpoint, {
-      ...options,
-      headers: {
-        ...authHeaders,
-        ...(options.headers || {})
-      }
-    });
-  }
-
-  // ========================================
-  // ENDPOINTS DE AUTENTICACIÓN
-  // ========================================
-
-  /**
-   * Inicia sesión con credenciales de administrador
-   */
-  async login(credentials: AuthCredentials): Promise<AuthResponse> {
-    const response = await this.request<{ token: string }>(
-      API_ENDPOINTS.AUTH.LOGIN,
-      {
-        method: 'POST',
-        body: JSON.stringify(credentials)
-      }
-    );
-
-    return {
-      success: response.success,
-      token: response.data?.token,
-      message: response.message
-    };
-  }
-
   // ========================================
   // ENDPOINTS DE REPORTES WEB PÚBLICOS
   // ========================================
@@ -146,61 +94,6 @@ class ReportsApiClient {
   async getWebReportStatus(ticketId: string): Promise<ApiResponse<WebReportStatusResponse>> {
     return this.request<WebReportStatusResponse>(
       API_ENDPOINTS.REPORTS.WEB.STATUS(ticketId)
-    );
-  }
-
-  // ========================================
-  // ENDPOINTS DE ADMINISTRACIÓN
-  // ========================================
-
-  /**
-   * Obtiene todos los reportes web (solo administradores)
-   */
-  async getAdminWebReports(
-    filters: {
-      estado?: WebReportStatus;
-      pagina?: number;
-      limite?: number;
-    } = {},
-    token: string
-  ): Promise<ApiResponse<PaginatedResponse<WebReport>>> {
-    const params = new URLSearchParams();
-    
-    if (filters.estado) params.append('estado', filters.estado);
-    if (filters.pagina) params.append('pagina', filters.pagina.toString());
-    if (filters.limite) params.append('limite', filters.limite.toString());
-
-    const endpoint = `${API_ENDPOINTS.REPORTS.WEB.ADMIN_LIST}?${params.toString()}`;
-    
-    return this.authenticatedRequest<PaginatedResponse<WebReport>>(
-      endpoint,
-      { method: 'GET' },
-      token
-    );
-  }
-
-  /**
-   * Marca un reporte como spam (solo administradores)
-   */
-  async markWebReportAsSpam(
-    ticketId: string,
-    token: string
-  ): Promise<ApiResponse<null>> {
-    return this.authenticatedRequest<null>(
-      API_ENDPOINTS.REPORTS.WEB.MARK_SPAM(ticketId),
-      { method: 'PATCH' },
-      token
-    );
-  }
-
-  /**
-   * Obtiene estadísticas de seguridad (solo administradores)
-   */
-  async getSecurityStats(token: string): Promise<ApiResponse<SecurityStats>> {
-    return this.authenticatedRequest<SecurityStats>(
-      API_ENDPOINTS.REPORTS.WEB.SECURITY_STATS,
-      { method: 'GET' },
-      token
     );
   }
 

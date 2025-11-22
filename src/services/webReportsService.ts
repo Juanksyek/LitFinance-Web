@@ -1,16 +1,123 @@
 // 📋 Servicio de Reportes Web - LitFinance
 import type {
   CreateWebReportRequest,
-  WebReport,
   WebReportStatusResponse,
-  ApiResponse,
-  PaginatedResponse,
-  SecurityStats,
-  WebReportStatus
+  ApiResponse
 } from '../types/reports';
 import { API_ENDPOINTS } from '../constants/reports';
-import { SecurityValidator, RateLimiter } from './securityService';
-import { authService } from './authService';
+
+// Interfaces para validación de seguridad
+interface SecurityValidation {
+  contieneLinksExternos: boolean;
+  puntuacionSpam: number;
+  palabrasProhibidas: string[];
+  esSospechoso: boolean;
+  puntuacionRiesgo: number;
+}
+
+interface RateLimitResult {
+  allowed: boolean;
+  reason?: string;
+}
+
+// Validación de seguridad básica
+class SecurityValidator {
+  static validateContent(
+    _email: string,
+    _asunto: string,
+    descripcion: string,
+    _userAgent?: string
+  ): SecurityValidation {
+    const validation: SecurityValidation = {
+      contieneLinksExternos: false,
+      puntuacionSpam: 0,
+      palabrasProhibidas: [],
+      esSospechoso: false,
+      puntuacionRiesgo: 0
+    };
+
+    // Detectar links externos
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    validation.contieneLinksExternos = urlPattern.test(descripcion);
+
+    // Palabras prohibidas básicas
+    const bannedWords = ['spam', 'viagra', 'casino', 'bitcoin'];
+    const lowerDesc = descripcion.toLowerCase();
+    validation.palabrasProhibidas = bannedWords.filter(word => lowerDesc.includes(word));
+
+    // Calcular puntuación de spam
+    if (validation.contieneLinksExternos) validation.puntuacionSpam += 30;
+    validation.puntuacionSpam += validation.palabrasProhibidas.length * 20;
+
+    // Marcar como sospechoso
+    validation.esSospechoso = validation.puntuacionSpam > 50;
+    validation.puntuacionRiesgo = validation.puntuacionSpam;
+
+    return validation;
+  }
+
+  static shouldBlockReport(validation: SecurityValidation): boolean {
+    return validation.puntuacionRiesgo > 80;
+  }
+}
+
+// Rate Limiter básico
+class RateLimiter {
+  private static reportCounts = new Map<string, { count: number; resetTime: number }>();
+
+  static canCreateReport(clientId: string): RateLimitResult {
+    const now = Date.now();
+    const record = this.reportCounts.get(clientId);
+
+    if (!record || now > record.resetTime) {
+      return { allowed: true };
+    }
+
+    if (record.count >= 5) {
+      return { allowed: false, reason: 'Has alcanzado el límite de reportes por hora' };
+    }
+
+    return { allowed: true };
+  }
+
+  static recordReport(clientId: string): void {
+    const now = Date.now();
+    const resetTime = now + 3600000; // 1 hora
+    const record = this.reportCounts.get(clientId);
+
+    if (!record || now > record.resetTime) {
+      this.reportCounts.set(clientId, { count: 1, resetTime });
+    } else {
+      record.count++;
+    }
+  }
+
+  static getRateLimitInfo(clientId: string): {
+    hourRemaining: number;
+    dayRemaining: number;
+    resetTimeHour: number;
+    resetTimeDay: number;
+  } {
+    const record = this.reportCounts.get(clientId);
+    const now = Date.now();
+
+    if (!record || now > record.resetTime) {
+      return {
+        hourRemaining: 5,
+        dayRemaining: 20,
+        resetTimeHour: now + 3600000,
+        resetTimeDay: now + 86400000
+      };
+    }
+
+    return {
+      hourRemaining: Math.max(0, 5 - record.count),
+      dayRemaining: 20,
+      resetTimeHour: record.resetTime,
+      resetTimeDay: now + 86400000
+    };
+  }
+}
 
 export class WebReportsService {
   private static instance: WebReportsService;
@@ -285,171 +392,6 @@ export class WebReportsService {
       sessionStorage.setItem('litfinance_session_id', sessionId);
     }
     return sessionId;
-  }
-
-  // ===========================================
-  // MÉTODOS DE ADMINISTRACIÓN (requieren auth)
-  // ===========================================
-
-  /**
-   * Obtiene todos los reportes web (solo para administradores) - MOCK VERSION
-   */
-  public async getAdminReports(
-    filters: {
-      estado?: WebReportStatus;
-      pagina?: number;
-      limite?: number;
-    } = {}
-  ): Promise<ApiResponse<PaginatedResponse<WebReport>>> {
-    try {
-      if (!authService.isAuthenticated()) {
-        return {
-          success: false,
-          message: 'Acceso no autorizado',
-          timestamp: new Date().toISOString()
-        };
-      }
-
-      // Obtener reportes mock del localStorage
-      const rawReports = JSON.parse(localStorage.getItem('litfinance_mock_reports') || '[]');
-      const mockReports: WebReport[] = rawReports.map((report: Record<string, unknown>) => ({
-        ...report,
-        validacionesContenido: report.securityValidations || {
-          contieneLinksExternos: false,
-          puntuacionSpam: 0,
-          palabrasProhibidas: [],
-          esSospechoso: false,
-          puntuacionRiesgo: 0
-        },
-        historialAcciones: [
-          {
-            accion: 'Reporte creado',
-            fecha: report.fechaCreacion,
-            realizadaPor: 'Sistema',
-            detalles: 'Reporte creado por el usuario'
-          }
-        ]
-      }));
-
-      // Aplicar filtros
-      let filteredReports = mockReports;
-      if (filters.estado) {
-        filteredReports = mockReports.filter(report => report.estado === filters.estado);
-      }
-
-      // Paginación
-      const pagina = filters.pagina || 1;
-      const limite = filters.limite || 10;
-      const inicio = (pagina - 1) * limite;
-      const fin = inicio + limite;
-      
-      const paginatedReports = filteredReports.slice(inicio, fin);
-      const totalPaginas = Math.ceil(filteredReports.length / limite);
-
-      return {
-        success: true,
-        data: {
-          data: paginatedReports,
-          total: filteredReports.length,
-          pagina,
-          limite,
-          totalPaginas
-        },
-        message: 'Reportes obtenidos exitosamente',
-        timestamp: new Date().toISOString()
-      };
-    } catch (error) {
-      console.error('Error obteniendo reportes de admin:', error);
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : 'Error desconocido',
-        timestamp: new Date().toISOString()
-      };
-    }
-  }
-
-  /**
-   * Marca un reporte como spam (solo para administradores)
-   */
-  public async markReportAsSpam(ticketId: string): Promise<ApiResponse<null>> {
-    try {
-      if (!authService.isAuthenticated()) {
-        return {
-          success: false,
-          message: 'Acceso no autorizado',
-          timestamp: new Date().toISOString()
-        };
-      }
-
-      const url = `${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.REPORTS.WEB.MARK_SPAM(ticketId)}`;
-      
-      const response = await authService.authenticatedRequest<ApiResponse<null>>(url, {
-        method: 'PATCH'
-      });
-
-      return response;
-    } catch (error) {
-      console.error('Error marcando reporte como spam:', error);
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : 'Error desconocido',
-        timestamp: new Date().toISOString()
-      };
-    }
-  }
-
-  /**
-   * Obtiene estadísticas de seguridad (solo para administradores) - MOCK VERSION
-   */
-  public async getSecurityStats(): Promise<ApiResponse<SecurityStats>> {
-    try {
-      if (!authService.isAuthenticated()) {
-        return {
-          success: false,
-          message: 'Acceso no autorizado',
-          timestamp: new Date().toISOString()
-        };
-      }
-
-      // Generar estadísticas mock
-      const rawReports = JSON.parse(localStorage.getItem('litfinance_mock_reports') || '[]');
-      const reportesSospechosos = rawReports.filter((r: Record<string, unknown>) => 
-        r.securityValidations && (r.securityValidations as Record<string, unknown>).esSospechoso
-      ).length;
-
-      const mockStats: SecurityStats = {
-        reportesTotales: rawReports.length,
-        reportesBloqueados: Math.floor(rawReports.length * 0.1), // 10% bloqueados simulado
-        ipsConMasReportes: [
-          { ip: '192.168.1.100', cantidad: Math.max(1, Math.floor(rawReports.length * 0.3)) },
-          { ip: '10.0.0.50', cantidad: Math.max(1, Math.floor(rawReports.length * 0.2)) },
-          { ip: '172.16.0.25', cantidad: Math.max(1, Math.floor(rawReports.length * 0.1)) }
-        ],
-        puntuacionRiesgoPromedio: rawReports.length > 0 
-          ? rawReports.reduce((acc: number, r: Record<string, unknown>) => {
-              const validation = r.securityValidations as Record<string, unknown>;
-              return acc + (validation?.puntuacionRiesgo as number || 0);
-            }, 0) / rawReports.length
-          : 0,
-        reportesPorDia: [
-          { fecha: new Date().toISOString().split('T')[0], cantidad: rawReports.length, sospechosos: reportesSospechosos }
-        ]
-      };
-
-      return {
-        success: true,
-        data: mockStats,
-        message: 'Estadísticas obtenidas exitosamente',
-        timestamp: new Date().toISOString()
-      };
-    } catch (error) {
-      console.error('Error obteniendo estadísticas de seguridad:', error);
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : 'Error desconocido',
-        timestamp: new Date().toISOString()
-      };
-    }
   }
 }
 
