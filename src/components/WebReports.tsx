@@ -337,14 +337,6 @@ const StatusQueryModal: React.FC<StatusQueryModalProps> = ({ onClose }) => {
                 {reportStatus.fechaUltimaActualizacion && (
                   <div><strong>Última actualización:</strong> {new Date(reportStatus.fechaUltimaActualizacion).toLocaleString('es-ES')}</div>
                 )}
-                {reportStatus.respuestaAdmin && (
-                  <div>
-                    <strong>Respuesta del administrador:</strong>
-                    <div className="mt-1 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded">
-                      {reportStatus.respuestaAdmin}
-                    </div>
-                  </div>
-                )}
                 {reportStatus.esSospechoso && (
                   <div className="text-yellow-600 dark:text-yellow-400">
                     ⚠️ Este reporte ha sido marcado para revisión adicional
