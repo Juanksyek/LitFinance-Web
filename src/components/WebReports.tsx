@@ -1,23 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { 
   CreateWebReportRequest, 
-  WebReportStatusResponse,
-  AuthCredentials 
+  WebReportStatusResponse
 } from '../types/reports';
 import { webReportsService } from '../services/webReportsService';
-import { authService } from '../services/authService';
-import { AdminPanel } from './AdminPanel';
 
 export const WebReports: React.FC = () => {
   const [showReportForm, setShowReportForm] = useState(false);
   const [showStatusQuery, setShowStatusQuery] = useState(false);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    setIsAuthenticated(authService.isAuthenticated());
-  }, []);
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -69,16 +59,6 @@ export const WebReports: React.FC = () => {
         </div>
       </div>
 
-      {/* Enlace de administración */}
-      <div className="text-center">
-        <button
-          onClick={() => setShowAdminLogin(true)}
-          className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        >
-          {isAuthenticated ? 'Ir al Panel de Admin' : 'Acceso Administrativo'}
-        </button>
-      </div>
-
       {/* Modales */}
       {showReportForm && (
         <ReportFormModal onClose={() => setShowReportForm(false)} />
@@ -86,26 +66,6 @@ export const WebReports: React.FC = () => {
 
       {showStatusQuery && (
         <StatusQueryModal onClose={() => setShowStatusQuery(false)} />
-      )}
-
-      {showAdminLogin && (
-        <AdminLoginModal
-          isAuthenticated={isAuthenticated}
-          onClose={() => setShowAdminLogin(false)}
-          onLoginSuccess={() => {
-            setIsAuthenticated(true);
-            setShowAdminLogin(false);
-            setShowAdminPanel(true);
-          }}
-          onShowPanel={() => {
-            setShowAdminLogin(false);
-            setShowAdminPanel(true);
-          }}
-        />
-      )}
-
-      {showAdminPanel && (
-        <AdminPanel onClose={() => setShowAdminPanel(false)} />
       )}
     </div>
   );
@@ -402,131 +362,6 @@ const StatusQueryModal: React.FC<StatusQueryModalProps> = ({ onClose }) => {
               Cerrar
             </button>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Modal de login admin
-interface AdminLoginModalProps {
-  isAuthenticated: boolean;
-  onClose: () => void;
-  onLoginSuccess: () => void;
-  onShowPanel: () => void;
-}
-
-const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ 
-  isAuthenticated, 
-  onClose, 
-  onLoginSuccess, 
-  onShowPanel 
-}) => {
-  const [credentials, setCredentials] = useState<AuthCredentials>({
-    email: '',
-    password: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      onShowPanel();
-    }
-  }, [isAuthenticated, onShowPanel]);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      const response = await authService.login(credentials);
-      if (response.success) {
-        onLoginSuccess();
-      } else {
-        setError(response.message);
-      }
-    } catch (err) {
-      setError('Error de conexión');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (isAuthenticated) {
-    return null; // El useEffect se encargará de mostrar el panel
-  }
-
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-md">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-              🔐 Acceso Administrativo
-            </h2>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-            >
-              ✖️
-            </button>
-          </div>
-        </div>
-
-        <div className="p-6">
-          {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg dark:bg-red-900/20 dark:border-red-800 dark:text-red-200">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                value={credentials.email}
-                onChange={(e) => setCredentials(prev => ({ ...prev, email: e.target.value }))}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Contraseña
-              </label>
-              <input
-                type="password"
-                value={credentials.password}
-                onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
-
-            <div className="flex items-center gap-4 pt-4">
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-              >
-                {loading ? '⏳ Verificando...' : '🔑 Ingresar'}
-              </button>
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-              >
-                Cancelar
-              </button>
-            </div>
-          </form>
         </div>
       </div>
     </div>
