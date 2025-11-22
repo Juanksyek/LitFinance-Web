@@ -29,12 +29,6 @@ export const routes: RouteConfig[] = [
   }
 ];
 
-// Ruta secreta para acceso directo al sistema de reportes con parámetros específicos
-export const SECRET_ROUTES = {
-  ADMIN_REPORTS: '/admin/reports/secure',
-  SYSTEM_HEALTH: '/system/health/check'
-} as const;
-
 /**
  * Hook para navegación programática
  */
@@ -117,21 +111,13 @@ export const getBreadcrumbs = (path: string): Array<{ label: string; path: strin
 /**
  * Enlaces de navegación para el header
  */
-export const getNavigationLinks = (includeAdmin: boolean = false) => {
+export const getNavigationLinks = () => {
   const links = [
     { label: '🏠 Inicio', path: '/', icon: '🏠' },
     { label: '📋 Reportes', path: '/reports', icon: '📋' },
     { label: '📱 Descargar App', path: '/#download', icon: '📱' },
     { label: 'ℹ️ Acerca de', path: '/#about', icon: 'ℹ️' }
   ];
-
-  if (includeAdmin) {
-    links.push({
-      label: '🛡️ Admin',
-      path: SECRET_ROUTES.ADMIN_REPORTS,
-      icon: '🛡️'
-    });
-  }
 
   return links;
 };
