@@ -23,10 +23,10 @@ interface RateLimitResult {
 // Validación de seguridad básica
 class SecurityValidator {
   static validateContent(
-    email: string,
-    asunto: string,
+    _email: string,
+    _asunto: string,
     descripcion: string,
-    userAgent?: string
+    _userAgent?: string
   ): SecurityValidation {
     const validation: SecurityValidation = {
       contieneLinksExternos: false,
