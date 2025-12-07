@@ -67,4 +67,4 @@ export default tseslint.config([
   },
 ])
 ``` 
-1 de noviembre del 2025 Juan Carlos Flores Ramírez
+6 de diciembre del 2025 Juan Carlos Flores Ramírez
