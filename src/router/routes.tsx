@@ -2,6 +2,8 @@
 import React from 'react';
 import { ReportsPage } from '../pages/Reports';
 import Home from '../pages/Home';
+import Analytics from '../pages/Analytics';
+import Historial from '../pages/Historial';
 
 export interface RouteConfig {
   path: string;
@@ -26,6 +28,20 @@ export const routes: RouteConfig[] = [
     title: 'LitFinance - Sistema de Reportes',
     description: 'Centro de reportes y soporte técnico',
     isPublic: true
+  },
+  {
+    path: '/analytics',
+    component: Analytics,
+    title: 'LitFinance - Analíticas',
+    description: 'Visualización de patrones financieros y estadísticas',
+    requiresAuth: true
+  },
+  {
+    path: '/historial',
+    component: Historial,
+    title: 'LitFinance - Historial',
+    description: 'Historial completo de transacciones',
+    requiresAuth: true
   }
 ];
 
