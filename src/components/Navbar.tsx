@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ThemeToggle from './ThemeToggle'
 import { Download, Menu, X, Smartphone } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import LanguageSelector from './LanguageSelector'
+import { useI18n } from '../hooks/useI18n'
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { t } = useI18n();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,12 +62,12 @@ export default function Navbar() {
           </motion.a>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
+          <nav className="hidden xl:flex items-center gap-6 2xl:gap-8">
             {navItems.map((item, index) => (
               <motion.a
                 key={item.href}
                 href={item.href}
-                className="relative text-sm font-medium text-content/80 hover:text-primary transition-colors group"
+                className="relative text-sm font-medium text-content/80 hover:text-primary transition-colors group whitespace-nowrap"
                 whileHover={{ y: -2 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -79,21 +83,30 @@ export default function Navbar() {
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden xl:flex items-center gap-2 2xl:gap-3">
+            <LanguageSelector />
+            <Link to="/login" className="btn btn-secondary text-sm px-3 py-1.5">
+              {t('auth.login')}
+            </Link>
+            <Link to="/register" className="btn btn-primary text-sm px-3 py-1.5">
+              {t('auth.register')}
+            </Link>
             <ThemeToggle />
             <motion.a 
               href="#descargas" 
-              className="btn btn-primary shadow-lg shadow-primary/25 hover:shadow-primary/40"
+              className="btn btn-primary shadow-lg shadow-primary/25 hover:shadow-primary/40 text-sm px-3 py-1.5"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
               <Smartphone size={16} />
-              Descargar App
+              <span className="hidden 2xl:inline">{t('nav.downloadApp')}</span>
+              <span className="xl:inline 2xl:hidden">App</span>
             </motion.a>
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex lg:hidden items-center gap-3">
+          <div className="flex xl:hidden items-center gap-3">
+            <LanguageSelector />
             <ThemeToggle />
             <motion.button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -131,7 +144,7 @@ export default function Navbar() {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              className="lg:hidden absolute top-full left-0 right-0 bg-bg/95 backdrop-blur-xl border-b border-black/10 dark:border-white/10 shadow-2xl"
+              className="xl:hidden absolute top-full left-0 right-0 bg-bg/95 backdrop-blur-xl border-b border-black/10 dark:border-white/10 shadow-2xl"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
@@ -154,7 +167,12 @@ export default function Navbar() {
                     </motion.a>
                   ))}
                 </nav>
-                
+                <Link to="/login" className="btn btn-secondary w-full mb-2" onClick={() => setIsMobileMenuOpen(false)}>
+                  {t('auth.login')}
+                </Link>
+                <Link to="/register" className="btn btn-primary w-full mb-4" onClick={() => setIsMobileMenuOpen(false)}>
+                  {t('auth.register')}
+                </Link>
                 <motion.a 
                   href="#descargas" 
                   className="btn btn-primary w-full justify-center shadow-lg shadow-primary/25"
@@ -165,7 +183,7 @@ export default function Navbar() {
                   whileTap={{ scale: 0.98 }}
                 >
                   <Download size={16} />
-                  Descargar App
+                  {t('nav.downloadApp')}
                 </motion.a>
               </div>
             </motion.div>
