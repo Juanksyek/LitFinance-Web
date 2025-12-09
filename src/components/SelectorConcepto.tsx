@@ -1,22 +1,16 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Plus, X, Trash2 } from 'lucide-react';
-import { listarConceptos, crearConcepto, eliminarConcepto } from '../services/conceptoService';
-import type { Concepto } from '../types/concepto';
+import { Search, Plus, X } from 'lucide-react';
+import { listarConceptos, crearConcepto, eliminarConcepto, editarConcepto } from '../services/conceptoService';
+import type { Concepto, EditarConceptoRequest } from '../types/concepto';
+import ConceptoEditable from './ConceptoEditable';
 
 interface SelectorConceptoProps {
   onSelect: (concepto: string) => void;
   placeholder?: string;
 }
 
-const CONCEPTOS_PREDEFINIDOS = [
-  { nombre: 'Viajes', icono: '✈️', color: '#2196F3' },
-  { nombre: 'Carro', icono: '🚗', color: '#F44336' },
-  { nombre: 'Novia', icono: '❤️', color: '#E91E63' },
-  { nombre: 'Juegos', icono: '🎮', color: '#9C27B0' },
-  { nombre: 'Dinerillo', icono: '🌿', color: '#4CAF50' },
-  { nombre: 'Luz', icono: '💡', color: '#FFC107' },
-];
+
 
 export default function SelectorConcepto({ 
   onSelect, 
@@ -27,22 +21,24 @@ export default function SelectorConcepto({
   const [mostrarCrear, setMostrarCrear] = useState(false);
   const [nuevoConcepto, setNuevoConcepto] = useState({ nombre: '', icono: '📌', color: '#FF9800' });
 
-  useEffect(() => {
-    cargarConceptos();
-  }, []);
 
-  const cargarConceptos = async () => {
-    try {
-      console.log('🔄 SelectorConcepto - Cargando conceptos...');
-      const response = await listarConceptos({ limit: 50 });
-      console.log('✅ SelectorConcepto - Respuesta:', response);
-      console.log('📊 SelectorConcepto - Conceptos:', response.conceptos);
-      setConceptosUsuario(response.conceptos || []);
-    } catch (error) {
-      console.error('❌ SelectorConcepto - Error cargando conceptos:', error);
-      setConceptosUsuario([]);
-    }
-  };
+  useEffect(() => {
+    // Definir la función dentro del useEffect para evitar advertencias de dependencias
+    const cargarConceptos = async () => {
+      try {
+        // Se puede ajustar el limit y skip para paginación futura
+        const response = await listarConceptos({ limit: 50, search: busqueda });
+        // Forzamos el tipado para evitar error de compilación
+        const conceptos = (response as { resultados?: Concepto[]; conceptos?: Concepto[] }).resultados || (response as { resultados?: Concepto[]; conceptos?: Concepto[] }).conceptos || [];
+        setConceptosUsuario(conceptos);
+      } catch {
+        setConceptosUsuario([]);
+      }
+    };
+    cargarConceptos();
+  }, [busqueda]);
+
+
 
   const handleCrearConcepto = async () => {
     if (!nuevoConcepto.nombre.trim()) return;
@@ -53,7 +49,10 @@ export default function SelectorConcepto({
         icono: nuevoConcepto.icono,
         color: nuevoConcepto.color
       });
-      await cargarConceptos();
+      // Recargar conceptos tras crear
+      const response = await listarConceptos({ limit: 50, search: busqueda });
+      const conceptos = (response as { resultados?: Concepto[]; conceptos?: Concepto[] })?.resultados || response?.conceptos || [];
+      setConceptosUsuario(conceptos);
       setMostrarCrear(false);
       setNuevoConcepto({ nombre: '', icono: '📌', color: '#FF9800' });
       onSelect(nuevoConcepto.nombre);
@@ -68,17 +67,17 @@ export default function SelectorConcepto({
 
     try {
       await eliminarConcepto(conceptoId);
-      await cargarConceptos();
+      // Recargar conceptos tras eliminar
+      const response = await listarConceptos({ limit: 50, search: busqueda });
+      const conceptos = (response as { resultados?: Concepto[]; conceptos?: Concepto[] })?.resultados || response?.conceptos || [];
+      setConceptosUsuario(conceptos);
     } catch (error) {
       console.error('Error eliminando concepto:', error);
       alert('Error al eliminar concepto');
     }
   };
 
-  const conceptosCombinados = [
-    ...CONCEPTOS_PREDEFINIDOS,
-    ...conceptosUsuario.map(c => ({ nombre: c.nombre, icono: c.icono || '📌' }))
-  ];
+
 
   return (
     <div>
@@ -100,7 +99,7 @@ export default function SelectorConcepto({
         />
       </div>
 
-      {/* Conceptos predefinidos y del usuario */}
+      {/* Solo conceptos del usuario */}
       {!mostrarCrear && (
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -116,11 +115,10 @@ export default function SelectorConcepto({
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {conceptosCombinados
-              .filter(c => c.nombre.toLowerCase().includes(busqueda.toLowerCase()))
-              .map((concepto, index) => (
+            {conceptosUsuario.length > 0 ? (
+              conceptosUsuario.map((concepto) => (
                 <motion.button
-                  key={index}
+                  key={concepto._id || concepto.conceptoId || concepto.id}
                   type="button"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -129,11 +127,15 @@ export default function SelectorConcepto({
                     setBusqueda(concepto.nombre);
                   }}
                   className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20 transition-all flex items-center gap-1"
+                  style={{ border: `2px solid ${concepto.color || '#FF9800'}` }}
                 >
-                  <span>{concepto.icono}</span>
+                  <span>{concepto.icono || '📌'}</span>
                   <span>{concepto.nombre}</span>
                 </motion.button>
-              ))}
+              ))
+            ) : (
+              <span className="text-content/50 text-sm">No tienes conceptos aún.</span>
+            )}
           </div>
         </div>
       )}
@@ -233,26 +235,24 @@ export default function SelectorConcepto({
             {conceptosUsuario.length > 0 && (
               <div className="mt-4 grid grid-cols-2 gap-2">
                 {conceptosUsuario.map((concepto) => (
-                  <div
-                    key={concepto.id}
-                    className="relative p-3 rounded-xl border-2 transition-all group"
-                    style={{ 
-                      borderColor: concepto.color,
-                      backgroundColor: `${concepto.color}20`
+                  <ConceptoEditable
+                    key={concepto._id || concepto.conceptoId || concepto.id}
+                    concepto={concepto}
+                    onEdit={async (nuevo: EditarConceptoRequest) => {
+                      const id = concepto._id || concepto.conceptoId || concepto.id || '';
+                      if (!id) return;
+                      await editarConcepto(id, nuevo);
+                      // Recargar conceptos tras editar
+                      const response = await listarConceptos({ limit: 50, search: busqueda });
+                      const conceptos = (response as { resultados?: Concepto[]; conceptos?: Concepto[] })?.resultados || response?.conceptos || [];
+                      setConceptosUsuario(conceptos);
                     }}
-                  >
-                    <div className="text-center">
-                      <div className="text-2xl mb-1">{concepto.icono}</div>
-                      <p className="text-sm font-medium text-white truncate">{concepto.nombre}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleEliminarConcepto(concepto.id)}
-                      className="absolute top-1 right-1 p-1 rounded-lg bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-all"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
+                    onDelete={() => {
+                      const id = concepto._id || concepto.conceptoId || concepto.id || '';
+                      if (!id) return;
+                      handleEliminarConcepto(id);
+                    }}
+                  />
                 ))}
               </div>
             )}
