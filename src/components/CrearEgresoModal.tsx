@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingDown, ChevronDown } from 'lucide-react';
 import Modal from './Modal';
 import SelectorMoneda from './SelectorMoneda';
 import SelectorConcepto from './SelectorConcepto';
-import { crearTransaccion } from '../services';
+import { crearTransaccion, obtenerCuentaPrincipal } from '../services';
 import type { Moneda } from '../types/moneda';
 
 interface CrearEgresoModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  cuentaId: string;
+  // cuentaId ya no se recibe como prop, se obtiene desde la API
   monedaPrincipal: string;
   simbolo: string;
   subcuentas?: Array<{ id?: string; _id?: string; subCuentaId?: string; nombre: string }>;
@@ -21,11 +21,11 @@ export default function CrearEgresoModal({
   isOpen,
   onClose,
   onSuccess,
-  cuentaId,
   monedaPrincipal,
   simbolo,
   subcuentas = [],
 }: CrearEgresoModalProps) {
+  const [cuentaId, setCuentaId] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [selectorMonedaOpen, setSelectorMonedaOpen] = useState(false);
   const [monedaSeleccionada, setMonedaSeleccionada] = useState<Moneda>({
@@ -34,6 +34,23 @@ export default function CrearEgresoModal({
     nombre: monedaPrincipal,
     simbolo: simbolo
   });
+    useEffect(() => {
+      // Al abrir el modal, obtener la cuenta principal
+      if (isOpen) {
+        obtenerCuentaPrincipal().then((cuenta) => {
+          setCuentaId(cuenta.id || cuenta._id || '');
+          // Actualizar la moneda seleccionada con la de la cuenta
+          if (cuenta.moneda && cuenta.simbolo) {
+            setMonedaSeleccionada({
+              id: cuenta.id || cuenta._id || 'principal',
+              codigo: cuenta.moneda,
+              nombre: cuenta.moneda,
+              simbolo: cuenta.simbolo
+            });
+          }
+        });
+      }
+    }, [isOpen]);
   const [formData, setFormData] = useState({
     concepto: '',
     monto: '',
@@ -52,7 +69,7 @@ export default function CrearEgresoModal({
         monto: parseFloat(formData.monto),
         concepto: formData.concepto,
         motivo: formData.motivo || undefined,
-        moneda: monedaSeleccionada.nombre,
+        moneda: monedaSeleccionada.codigo,
         cuentaId: cuentaId,
         afectaCuenta: formData.afectaCuenta,
         subCuentaId: formData.subCuentaId || undefined,
@@ -104,7 +121,7 @@ export default function CrearEgresoModal({
               </div>
             </div>
 
-            <div className="w-32">
+            <div className="w-40">
               <label className="block text-sm font-medium text-content mb-2">
                 Moneda
               </label>
@@ -113,7 +130,7 @@ export default function CrearEgresoModal({
                 onClick={() => setSelectorMonedaOpen(true)}
                 className="w-full h-[52px] px-3 bg-white/50 dark:bg-neutral-900/50 border border-black/10 dark:border-white/10 rounded-xl outline-none hover:border-red-500 transition-all text-content flex items-center justify-between gap-2"
               >
-                <span className="font-medium">{monedaSeleccionada.codigo}</span>
+                <span className="font-medium">{monedaSeleccionada.simbolo} {monedaSeleccionada.codigo}</span>
                 <ChevronDown className="w-4 h-4 opacity-60" />
               </button>
             </div>
