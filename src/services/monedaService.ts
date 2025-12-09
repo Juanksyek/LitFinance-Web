@@ -10,7 +10,7 @@ import type {
 
 const API_BASE_URL = 'https://litfinance-api-production.up.railway.app';
 
-async function apiRequest<T>(
+export async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
