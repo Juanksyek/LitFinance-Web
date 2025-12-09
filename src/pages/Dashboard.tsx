@@ -39,11 +39,27 @@ import type {
 } from '../types';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, cuentaPrincipal } = useAuth();
   const navigate = useNavigate();
 
   // Estados para datos de la API
   const [cuenta, setCuenta] = useState<CuentaPrincipal | null>(null);
+  // Sincroniza cuentaPrincipal del contexto y localStorage
+  useEffect(() => {
+    if (cuentaPrincipal) {
+      setCuenta(cuentaPrincipal);
+      localStorage.setItem('cuentaPrincipal', JSON.stringify(cuentaPrincipal));
+    } else {
+      const stored = localStorage.getItem('cuentaPrincipal');
+      if (stored) {
+        try {
+          setCuenta(JSON.parse(stored));
+        } catch (error) {
+          console.error('Error parsing stored cuentaPrincipal:', error);
+        }
+      }
+    }
+  }, [cuentaPrincipal]);
   const [transacciones, setTransacciones] = useState<Transaccion[]>([]);
   const [recurrentes, setRecurrentes] = useState<Recurrente[]>([]);
 
@@ -75,20 +91,15 @@ export default function Dashboard() {
         listarRecurrentes(user?.id || ''),
       ]);
 
-      // Mostrar en consola las respuestas de los endpoints
-      console.log('Cuenta principal:', cuentaData);
-      console.log('Transacciones:', transaccionesData);
-      console.log('Recurrentes:', recurrentesData);
+      // Actualizar estados (soporta respuesta { cuenta: { ... } } o directa)
+      const cuentaPrincipal: CuentaPrincipal = typeof cuentaData === 'object' && 'cuenta' in cuentaData ? cuentaData.cuenta as CuentaPrincipal : cuentaData as CuentaPrincipal;
+      setCuenta(cuentaPrincipal);
 
-      // Actualizar estados
-      setCuenta(cuentaData);
-      
       // Transacciones: puede venir como array directo o en .transacciones
       const transaccionesArray = Array.isArray(transaccionesData) 
         ? transaccionesData 
         : (transaccionesData.transacciones || []);
       setTransacciones(transaccionesArray);
-      console.log('📊 Dashboard - Transacciones seteadas:', transaccionesArray.length);
       
       // La respuesta de recurrentes puede venir como 'items' o 'recurrentes'
       setRecurrentes(recurrentesData.items || recurrentesData.recurrentes || []);
@@ -456,12 +467,7 @@ export default function Dashboard() {
             <div className="space-y-3">
               {/* Lista de movimientos */}
               {(() => {
-                const movimientosFiltrados = transacciones.filter(t => filtroMovimientos === 'todos' || t.tipo === filtroMovimientos);
-                console.log('🔍 Dashboard - loading:', loading);
-                console.log('🔍 Dashboard - transacciones.length:', transacciones.length);
-                console.log('🔍 Dashboard - filtroMovimientos:', filtroMovimientos);
-                console.log('🔍 Dashboard - movimientosFiltrados.length:', movimientosFiltrados.length);
-                
+                const movimientosFiltrados = transacciones.filter(t => filtroMovimientos === 'todos' || t.tipo === filtroMovimientos);                
                 if (loading) {
                   return (
                     <div className="text-center py-8 text-content/60">
@@ -547,7 +553,6 @@ export default function Dashboard() {
               cargarDatosDashboard();
               setModalIngresoOpen(false);
             }}
-            cuentaId={cuenta._id}
             monedaPrincipal={cuenta.nombre}
             simbolo="$"
           />
@@ -559,7 +564,6 @@ export default function Dashboard() {
               cargarDatosDashboard();
               setModalEgresoOpen(false);
             }}
-            cuentaId={cuenta._id}
             monedaPrincipal={cuenta.nombre}
             simbolo="$"
           />
@@ -571,7 +575,7 @@ export default function Dashboard() {
               cargarDatosDashboard();
               setModalSubcuentaOpen(false);
             }}
-            cuentaPrincipalId={cuenta._id}
+            cuentaPrincipalId={cuenta?.id || ''}
             monedaPrincipal={cuenta.nombre}
             simbolo="$"
           />
