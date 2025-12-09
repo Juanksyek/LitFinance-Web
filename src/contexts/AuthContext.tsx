@@ -12,31 +12,40 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [cuentaPrincipal, setCuentaPrincipal] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Cargar usuario y token al iniciar
   useEffect(() => {
     const initAuth = async () => {
       const storedToken = authService.getToken();
-      
       if (storedToken) {
         setToken(storedToken);
         try {
           // Obtener perfil del usuario
           const profile = await authService.getProfile();
           setUser(profile);
+          // Obtener cuenta principal
+          try {
+            const cuentaResp = await import('../services/cuentaService').then(m => m.obtenerCuentaPrincipal());
+            const cuenta = typeof cuentaResp === 'object' && 'cuenta' in cuentaResp ? cuentaResp.cuenta : cuentaResp;
+            setCuentaPrincipal(cuenta);
+            localStorage.setItem('cuentaPrincipal', JSON.stringify(cuenta));
+          } catch (e) {
+            setCuentaPrincipal(null);
+            localStorage.removeItem('cuentaPrincipal');
+          }
         } catch (error) {
           console.error('Error al cargar perfil:', error);
-          // Token inválido, limpiar
           authService.logout();
           setToken(null);
           setUser(null);
+          setCuentaPrincipal(null);
+          localStorage.removeItem('cuentaPrincipal');
         }
       }
-      
       setIsLoading(false);
     };
-
     initAuth();
   }, []);
 
@@ -45,16 +54,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
    */
   const login = async (email: string, password: string) => {
     const response = await authService.login({ email, password });
-    // Compatibilidad: el backend responde con accessToken, user, rol
     const token = response.accessToken || response.token;
     const user = response.user;
     const rol = response.rol || user.rol;
     setToken(token || '');
     setUser(user);
-    // Guardar en localStorage
     localStorage.setItem('authToken', token || '');
     localStorage.setItem('user', JSON.stringify(user));
     if (rol) localStorage.setItem('rol', rol);
+    // Obtener cuenta principal al hacer login
+    try {
+      const cuentaResp = await import('../services/cuentaService').then(m => m.obtenerCuentaPrincipal());
+      const cuenta = typeof cuentaResp === 'object' && 'cuenta' in cuentaResp ? cuentaResp.cuenta : cuentaResp;
+      setCuentaPrincipal(cuenta);
+      localStorage.setItem('cuentaPrincipal', JSON.stringify(cuenta));
+    } catch (e) {
+      setCuentaPrincipal(null);
+      localStorage.removeItem('cuentaPrincipal');
+    }
   };
 
   /**
@@ -79,7 +96,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     authService.logout();
     setToken(null);
     setUser(null);
+    setCuentaPrincipal(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('cuentaPrincipal');
   };
 
   /**
@@ -93,6 +112,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const value: AuthContextType = {
     user,
     token,
+    cuentaPrincipal,
     isAuthenticated: !!token && !!user,
     isLoading,
     login,
