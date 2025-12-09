@@ -49,9 +49,19 @@ export default function CrearSubcuentaModal({
     afectaCuenta: true,
   });
 
+  const cuentaPrincipalIdValida = cuentaPrincipalId && cuentaPrincipalId !== '';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    console.log('[CrearSubcuentaModal] cuentaPrincipalId:', cuentaPrincipalId);
+
+    if (!cuentaPrincipalIdValida) {
+      alert('Error: No se encontró la cuenta principal. No se puede crear la subcuenta. Por favor recarga la página o verifica tu sesión.');
+      setLoading(false);
+      return;
+    }
 
     try {
       await crearSubcuenta({
@@ -76,7 +86,7 @@ export default function CrearSubcuentaModal({
       onClose();
     } catch (error) {
       console.error('Error al crear subcuenta:', error);
-      alert('Error al crear la subcuenta. Por favor intenta de nuevo.');
+      alert('Error al crear la subcuenta. Por favor intenta de nuevo o verifica que la cuenta principal esté activa.');
     } finally {
       setLoading(false);
     }
@@ -85,6 +95,9 @@ export default function CrearSubcuentaModal({
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} title="Nueva Subcuenta" size="md">
+        {!cuentaPrincipalIdValida && (
+          <div className="text-red-500 font-bold mb-4">No se encontró la cuenta principal. No se puede crear una subcuenta.</div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Nombre */}
           <div>
@@ -116,13 +129,7 @@ export default function CrearSubcuentaModal({
               </span>
               <ChevronDown size={20} className="text-content/60" />
             </button>
-          </div>
-
-          {/* Monto inicial */}
-          <div>
-            <label className="block text-sm font-medium text-content mb-2">
-              Monto inicial <span className="text-red-500">*</span>
-            </label>
+            {/* Botón de submit eliminado, solo debe haber uno al final */}
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-content/60">
                 {monedaSeleccionada.simbolo}
