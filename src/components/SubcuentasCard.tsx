@@ -16,7 +16,7 @@ export default function SubcuentasCard({
   onEditSubcuenta,
   onSubcuentaChange 
 }: SubcuentasCardProps) {
-  const { user } = useAuth();
+  const { cuentaPrincipal } = useAuth();
   const [subcuentas, setSubcuentas] = useState<Subcuenta[]>([]);
   const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState('');
@@ -26,29 +26,27 @@ export default function SubcuentasCard({
   const ITEMS_POR_PAGINA = 5;
 
   const cargarSubcuentas = useCallback(async () => {
-    if (!user?.id) {
-      console.log('⚠️ SubcuentasCard - No hay user.id, saliendo...');
+    const cuentaId = cuentaPrincipal?.id || '';
+    if (!cuentaId) {
+      console.log('⚠️ SubcuentasCard - No hay cuentaPrincipal.id, saliendo...');
       return;
     }
-    
     try {
       setLoading(true);
-      console.log('🔄 SubcuentasCard - Cargando subcuentas para user:', user.id);
-      const response = await listarSubcuentas(user.id, {
+      const response = await listarSubcuentas(cuentaId, {
         soloActivas: soloActivas || undefined,
         page: paginaActual,
         limit: ITEMS_POR_PAGINA
       });
-      
-      console.log('✅ SubcuentasCard - Respuesta recibida:', response);
-      console.log('📊 SubcuentasCard - Es array?:', Array.isArray(response));
-      
-      // La respuesta ES el array directamente, no viene en response.subcuentas
-      const subcuentasArray = Array.isArray(response) ? response : [];
+      let subcuentasArray: Subcuenta[] = [];
+      if (Array.isArray(response)) {
+        subcuentasArray = response;
+      } else if (response && Array.isArray(response.subcuentas)) {
+        subcuentasArray = response.subcuentas;
+      } else {
+        console.warn('[SubcuentasCard] Respuesta inesperada de listarSubcuentas:', response);
+      }
       setSubcuentas(subcuentasArray);
-      console.log('📊 SubcuentasCard - Subcuentas seteadas:', subcuentasArray.length);
-      
-      // Si viene paginación en el futuro, ajustar aquí
       setTotalPaginas(1);
     } catch (error) {
       console.error('❌ SubcuentasCard - Error cargando subcuentas:', error);
@@ -57,14 +55,14 @@ export default function SubcuentasCard({
       console.log('🏁 SubcuentasCard - setLoading(false)');
       setLoading(false);
     }
-  }, [user?.id, soloActivas, paginaActual]);
+  }, [cuentaPrincipal?.id, soloActivas, paginaActual]);
 
   useEffect(() => {
-    console.log('🚀 SubcuentasCard - useEffect ejecutándose, user.id:', user?.id);
-    if (user?.id) {
+    const cuentaId = cuentaPrincipal?.id || '';
+    if (cuentaId) {
       cargarSubcuentas();
     }
-  }, [user?.id, cargarSubcuentas]);
+  }, [cuentaPrincipal, cargarSubcuentas]);
 
   const handleEliminar = async (id: string) => {
     if (!window.confirm('¿Estás seguro de eliminar esta subcuenta?')) return;
@@ -87,11 +85,6 @@ export default function SubcuentasCard({
   const subcuentasFiltradas = subcuentas.filter(s =>
     s.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
-
-  console.log('🔍 SubcuentasCard - subcuentas.length:', subcuentas.length);
-  console.log('🔍 SubcuentasCard - busqueda:', busqueda);
-  console.log('🔍 SubcuentasCard - subcuentasFiltradas.length:', subcuentasFiltradas.length);
-  console.log('🔍 SubcuentasCard - loading:', loading);
 
   // Mapeo de colores
   const colorMap: Record<string, string> = {

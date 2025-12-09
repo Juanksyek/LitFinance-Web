@@ -1,11 +1,14 @@
 // 🏷️ Tipos para Conceptos Personalizados - LitFinance
 
 export interface Concepto {
-  id: string;
+  id?: string;
+  _id?: string;
+  conceptoId?: string;
   nombre: string;
   color: string;
   icono: string;
-  usuarioId: string;
+  usuarioId?: string;
+  userId?: string;
   createdAt?: string;
   updatedAt?: string;
 }

@@ -1,4 +1,3 @@
-// 📊 Servicio de Subcuentas - LitFinance API
 import type {
   Subcuenta,
   CrearSubcuentaRequest,
@@ -29,13 +28,16 @@ async function apiRequest<T>(
     ...options,
     headers,
   });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Error en la petición');
+  let data = null;
+  try {
+    data = await response.json();
+  } catch (e) {
+    console.error('[apiRequest] Error parsing JSON:', e);
   }
-
+  if (!response.ok) {
+    console.error('[apiRequest] Error:', data?.message || 'Error en la petición');
+    throw new Error(data?.message || 'Error en la petición');
+  }
   return data;
 }
 
