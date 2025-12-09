@@ -41,7 +41,6 @@ async function apiRequest<T>(
  */
 export async function obtenerCuentaPrincipal(): Promise<CuentaPrincipal> {
   const response = await apiRequest<CuentaPrincipal>('/cuenta/principal');
-  console.log('Respuesta cruda /cuenta/principal:', response);
   return response;
 }
 
