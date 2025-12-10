@@ -26,9 +26,10 @@ export default function SubcuentasCard({
   const ITEMS_POR_PAGINA = 5;
 
   const cargarSubcuentas = useCallback(async () => {
-    const cuentaId = cuentaPrincipal?.id || '';
+    const cuentaId = cuentaPrincipal?.id || cuentaPrincipal?._id || '';
     if (!cuentaId) {
       console.log('⚠️ SubcuentasCard - No hay cuentaPrincipal.id, saliendo...');
+      setLoading(false);
       return;
     }
     try {
@@ -55,12 +56,14 @@ export default function SubcuentasCard({
       console.log('🏁 SubcuentasCard - setLoading(false)');
       setLoading(false);
     }
-  }, [cuentaPrincipal?.id, soloActivas, paginaActual]);
+  }, [cuentaPrincipal?.id, cuentaPrincipal?._id, soloActivas, paginaActual]);
 
   useEffect(() => {
-    const cuentaId = cuentaPrincipal?.id || '';
+    const cuentaId = cuentaPrincipal?.id || cuentaPrincipal?._id || '';
     if (cuentaId) {
       cargarSubcuentas();
+    } else {
+      setLoading(false);
     }
   }, [cuentaPrincipal, cargarSubcuentas]);
 

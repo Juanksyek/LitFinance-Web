@@ -40,8 +40,10 @@ async function apiRequest<T>(
  * 📊 Obtener cuenta principal del usuario autenticado
  */
 export async function obtenerCuentaPrincipal(): Promise<CuentaPrincipal> {
-  const response = await apiRequest<CuentaPrincipal>('/cuenta/principal');
-  return response;
+  const response = await apiRequest<any>('/cuenta/principal');
+  // Handle both { cuenta: {...} } and direct {...} formats
+  const cuenta = response.cuenta || response;
+  return cuenta;
 }
 
 /**

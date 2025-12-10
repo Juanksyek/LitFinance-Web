@@ -23,3 +23,4 @@ dist-ssr
 *.sln
 *.sw?
 .env
+LitFinance.postman_collection.json
