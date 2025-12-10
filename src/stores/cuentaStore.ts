@@ -1,13 +1,13 @@
 import { create } from 'zustand';
-import type { Cuenta } from '../types/cuenta';
+import type { CuentaPrincipal } from '../types/cuenta';
 
 interface CuentaState {
-  cuenta: Cuenta | null;
+  cuenta: CuentaPrincipal | null;
   loading: boolean;
   error: string | null;
   lastFetch: number | null;
   
-  setCuenta: (cuenta: Cuenta | null) => void;
+  setCuenta: (cuenta: CuentaPrincipal | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   shouldRefetch: () => boolean;
