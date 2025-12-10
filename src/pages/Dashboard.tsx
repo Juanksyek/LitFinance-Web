@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -14,7 +15,6 @@ import {
   CheckCircle,
   ArrowUpCircle,
   ArrowDownCircle,
-  AlertCircle,
   Edit2,
   Trash2
 } from 'lucide-react';
@@ -24,48 +24,47 @@ import CrearEgresoModal from '../components/CrearEgresoModal';
 import CrearSubcuentaModal from '../components/CrearSubcuentaModal';
 import CrearRecurrenteModal from '../components/CrearRecurrenteModal';
 import SubcuentasCard from '../components/SubcuentasCard';
+import { CardSkeleton, TableSkeleton } from '../components/SkeletonLoader';
 import { useAuth } from '../hooks/useAuth';
-import {
-  obtenerCuentaPrincipal,
-  listarTransacciones,
-  listarRecurrentes,
-} from '../services';
+import { useCuentaPrincipal } from '../hooks/useCuentaPrincipal';
+import { useTransacciones } from '../hooks/useTransacciones';
+import { listarRecurrentes } from '../services';
 import { eliminarRecurrente } from '../services/recurrenteService';
 import type {
-  CuentaPrincipal,
   Subcuenta,
-  Transaccion,
   Recurrente,
 } from '../types';
 
 export default function Dashboard() {
   const { user, cuentaPrincipal } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  // Estados para datos de la API
-  const [cuenta, setCuenta] = useState<CuentaPrincipal | null>(null);
-  // Sincroniza cuentaPrincipal del contexto y localStorage
-  useEffect(() => {
-    if (cuentaPrincipal) {
-      setCuenta(cuentaPrincipal);
-      localStorage.setItem('cuentaPrincipal', JSON.stringify(cuentaPrincipal));
-    } else {
-      const stored = localStorage.getItem('cuentaPrincipal');
-      if (stored) {
-        try {
-          setCuenta(JSON.parse(stored));
-        } catch (error) {
-          console.error('Error parsing stored cuentaPrincipal:', error);
-        }
-      }
-    }
-  }, [cuentaPrincipal]);
-  const [transacciones, setTransacciones] = useState<Transaccion[]>([]);
-  const [recurrentes, setRecurrentes] = useState<Recurrente[]>([]);
+  // Usar hooks optimizados con cache
+  const { cuenta: cuentaFromHook, loading: loadingCuenta, refetch: refetchCuenta } = useCuentaPrincipal();
+  const { data: transacciones = [], isLoading: loadingTransacciones, refetch: refetchTransacciones } = useTransacciones({ rango: 'mes' });
 
-  // Estados de UI
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // Query para recurrentes con cache
+  const { data: recurrentesData, isLoading: loadingRecurrentes, refetch: refetchRecurrentes } = useQuery({
+    queryKey: ['recurrentes', user?.id],
+    queryFn: () => listarRecurrentes(user?.id || ''),
+    enabled: !!user?.id,
+    staleTime: 1000 * 30,
+    select: (data) => data.items || data.recurrentes || [],
+  });
+
+  const recurrentes = recurrentesData || [];
+  const cuenta = cuentaFromHook || cuentaPrincipal;
+  const loading = loadingCuenta || loadingTransacciones || loadingRecurrentes;
+
+  // Mutation para eliminar recurrente
+  const eliminarMutation = useMutation({
+    mutationFn: eliminarRecurrente,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recurrentes'] });
+      refetchRecurrentes();
+    },
+  });
 
   // Estados de modales
   const [modalIngresoOpen, setModalIngresoOpen] = useState(false);
@@ -77,71 +76,34 @@ export default function Dashboard() {
   const [busquedaRecurrente, setBusquedaRecurrente] = useState('');
   const [filtroMovimientos, setFiltroMovimientos] = useState<'todos' | 'ingreso' | 'egreso'>('todos');
 
-  // Función para cargar/recargar todos los datos
-  const cargarDatosDashboard = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // Cargar todos los datos en paralelo
-      // Usar el servicio ajustado para obtener la cuenta principal
-      const [cuentaData, transaccionesData, recurrentesData] = await Promise.all([
-        obtenerCuentaPrincipal(),
-        listarTransacciones(),
-        listarRecurrentes(user?.id || ''),
-      ]);
-
-      // Actualizar estados (soporta respuesta { cuenta: { ... } } o directa)
-      const cuentaPrincipal: CuentaPrincipal = typeof cuentaData === 'object' && 'cuenta' in cuentaData ? cuentaData.cuenta as CuentaPrincipal : cuentaData as CuentaPrincipal;
-      setCuenta(cuentaPrincipal);
-
-      // Transacciones: puede venir como array directo o en .transacciones
-      const transaccionesArray = Array.isArray(transaccionesData) 
-        ? transaccionesData 
-        : (transaccionesData.transacciones || []);
-      setTransacciones(transaccionesArray);
-      
-      // La respuesta de recurrentes puede venir como 'items' o 'recurrentes'
-      setRecurrentes(recurrentesData.items || recurrentesData.recurrentes || []);
-    } catch (err) {
-      console.error('Error al cargar datos del dashboard:', err);
-      setError('No se pudieron cargar los datos. Por favor intenta de nuevo.');
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
+  // Función para refrescar todos los datos
+  const refrescarDatos = () => {
+    refetchCuenta();
+    refetchTransacciones();
+    refetchRecurrentes();
+  };
 
   // Funciones de edición y eliminación
   const handleEditarSubcuenta = (subcuenta: Subcuenta) => {
-    // TODO: Implementar edición de subcuenta
     console.log('Editar subcuenta:', subcuenta);
     setModalSubcuentaOpen(true);
   };
 
   const handleEditarRecurrente = (recurrente: Recurrente) => {
-    // TODO: Implementar edición de recurrente
     console.log('Editar recurrente:', recurrente);
     setModalRecurrenteOpen(true);
   };
 
   const handleEliminarRecurrente = async (id: string) => {
-    if (!user || !window.confirm('¿Estás seguro de eliminar este recurrente?')) return;
+    if (!window.confirm('¿Estás seguro de eliminar este recurrente?')) return;
     
     try {
-      await eliminarRecurrente(id);
-      await cargarDatosDashboard();
+      await eliminarMutation.mutateAsync(id);
     } catch (error) {
       console.error('Error al eliminar recurrente:', error);
       alert('Error al eliminar el recurrente');
     }
   };
-
-  // Cargar datos al montar el componente
-  useEffect(() => {
-    if (user) {
-      cargarDatosDashboard();
-    }
-  }, [user, cargarDatosDashboard]);
 
   // Calcular totales de ingresos y egresos
   const calcularTotales = () => {
@@ -156,37 +118,26 @@ export default function Dashboard() {
     return { ingresos, egresos };
   };
 
-  // UI de loading
+  // UI de loading con skeleton
   if (loading) {
     return (
       <>
         <DashboardNavbar />
-        <div className="min-h-screen bg-bg flex items-center justify-center pt-20">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-content/60">Cargando dashboard...</p>
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  // UI de error
-  if (error) {
-    return (
-      <>
-        <DashboardNavbar />
-        <div className="min-h-screen bg-bg flex items-center justify-center pt-20">
-          <div className="text-center max-w-md">
-            <AlertCircle className="text-red-500 w-16 h-16 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-content mb-2">Error</h2>
-            <p className="text-content/60 mb-4">{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-6 py-2 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition-all"
-            >
-              Reintentar
-            </button>
+        <div className="min-h-screen bg-bg pt-20 pb-12 px-4">
+          <div className="container-app max-w-7xl mx-auto">
+            <div className="mb-6">
+              <CardSkeleton />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <CardSkeleton />
+              <CardSkeleton />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <TableSkeleton rows={5} />
+              </div>
+              <CardSkeleton />
+            </div>
           </div>
         </div>
       </>
@@ -417,7 +368,7 @@ export default function Dashboard() {
             <SubcuentasCard 
               onOpenModal={() => setModalSubcuentaOpen(true)}
               onEditSubcuenta={handleEditarSubcuenta}
-              onSubcuentaChange={cargarDatosDashboard}
+              onSubcuentaChange={refrescarDatos}
             />
           </div>
 
@@ -550,7 +501,7 @@ export default function Dashboard() {
             isOpen={modalIngresoOpen}
             onClose={() => setModalIngresoOpen(false)}
             onSuccess={() => {
-              cargarDatosDashboard();
+              refrescarDatos();
               setModalIngresoOpen(false);
             }}
             monedaPrincipal={cuenta.nombre}
@@ -561,7 +512,7 @@ export default function Dashboard() {
             isOpen={modalEgresoOpen}
             onClose={() => setModalEgresoOpen(false)}
             onSuccess={() => {
-              cargarDatosDashboard();
+              refrescarDatos();
               setModalEgresoOpen(false);
             }}
             monedaPrincipal={cuenta.nombre}
@@ -572,7 +523,7 @@ export default function Dashboard() {
             isOpen={modalSubcuentaOpen}
             onClose={() => setModalSubcuentaOpen(false)}
             onSuccess={() => {
-              cargarDatosDashboard();
+              refrescarDatos();
               setModalSubcuentaOpen(false);
             }}
             cuentaPrincipalId={cuenta?.id || ''}
@@ -584,7 +535,7 @@ export default function Dashboard() {
             isOpen={modalRecurrenteOpen}
             onClose={() => setModalRecurrenteOpen(false)}
             onSuccess={() => {
-              cargarDatosDashboard();
+              refrescarDatos();
               setModalRecurrenteOpen(false);
             }}
             cuentaId={cuenta._id}
