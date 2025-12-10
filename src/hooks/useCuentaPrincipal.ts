@@ -8,17 +8,23 @@ export function useCuentaPrincipal() {
   const query = useQuery({
     queryKey: ['cuenta_principal'],
     queryFn: async () => {
-      const cuenta = await obtenerCuentaPrincipal();
-      setCuenta(cuenta);
-      return cuenta;
+      try {
+        console.log('[useCuentaPrincipal] Fetching cuenta principal...');
+        const cuenta = await obtenerCuentaPrincipal();
+        console.log('[useCuentaPrincipal] Cuenta recibida:', cuenta);
+        setCuenta(cuenta);
+        setError(null);
+        return cuenta;
+      } catch (error) {
+        console.error('[useCuentaPrincipal] Error:', error);
+        setError(error instanceof Error ? error.message : 'Error desconocido');
+        throw error;
+      }
     },
     staleTime: 1000 * 30, // 30 segundos
     gcTime: 1000 * 60 * 5, // 5 minutos
     refetchOnWindowFocus: false,
     retry: 1,
-    onError: (error: Error) => {
-      setError(error.message);
-    },
   });
 
   return {
