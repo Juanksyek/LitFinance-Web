@@ -15,6 +15,7 @@ interface CrearIngresoModalProps {
   monedaPrincipal: string;
   simbolo: string;
   subcuentas?: Array<{ id?: string; _id?: string; subCuentaId?: string; nombre: string }>;
+  subcuentaIdPreseleccionada?: string;
 }
 
 export default function CrearIngresoModal({
@@ -24,6 +25,7 @@ export default function CrearIngresoModal({
   monedaPrincipal,
   simbolo,
   subcuentas = [],
+  subcuentaIdPreseleccionada,
 }: CrearIngresoModalProps) {
   const [cuentaId, setCuentaId] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -56,8 +58,15 @@ export default function CrearIngresoModal({
     monto: '',
     motivo: '',
     afectaCuenta: true,
-    subCuentaId: '',
+    subCuentaId: subcuentaIdPreseleccionada || '',
   });
+
+  // Actualizar subCuentaId cuando cambie subcuentaIdPreseleccionada
+  useEffect(() => {
+    if (subcuentaIdPreseleccionada) {
+      setFormData(prev => ({ ...prev, subCuentaId: subcuentaIdPreseleccionada }));
+    }
+  }, [subcuentaIdPreseleccionada]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
@@ -24,12 +24,15 @@ import CrearEgresoModal from '../components/CrearEgresoModal';
 import CrearSubcuentaModal from '../components/CrearSubcuentaModal';
 import CrearRecurrenteModal from '../components/CrearRecurrenteModal';
 import SubcuentasCard from '../components/SubcuentasCard';
+import RecurrenteDetalleModal from '../components/RecurrenteDetalleModal';
+import SubcuentaDetalleModal from '../components/SubcuentaDetalleModal';
+import ExpensesChart from '../components/ExpensesChart';
 import { CardSkeleton, TableSkeleton } from '../components/SkeletonLoader';
 import { useAuth } from '../hooks/useAuth';
 import { useCuentaPrincipal } from '../hooks/useCuentaPrincipal';
 import { useCuentaHistorial } from '../hooks/useCuentaHistorial';
 import { listarRecurrentes } from '../services';
-import { eliminarRecurrente } from '../services/recurrenteService';
+import { eliminarRecurrente, pausarRecurrente, reanudarRecurrente } from '../services/recurrenteService';
 import type {
   Subcuenta,
   Recurrente,
@@ -84,10 +87,43 @@ export default function Dashboard() {
   const [modalEgresoOpen, setModalEgresoOpen] = useState(false);
   const [modalSubcuentaOpen, setModalSubcuentaOpen] = useState(false);
   const [modalRecurrenteOpen, setModalRecurrenteOpen] = useState(false);
+  const [modalRecurrenteDetalleOpen, setModalRecurrenteDetalleOpen] = useState(false);
+  const [recurrenteSeleccionado, setRecurrenteSeleccionado] = useState<Recurrente | null>(null);
+  const [modalSubcuentaDetalleOpen, setModalSubcuentaDetalleOpen] = useState(false);
+  const [subcuentaSeleccionada, setSubcuentaSeleccionada] = useState<Subcuenta | null>(null);
+  const [periodoDropdownOpen, setPeriodoDropdownOpen] = useState(false);
+  const [subcuentaIdParaMovimiento, setSubcuentaIdParaMovimiento] = useState<string | undefined>(undefined);
 
   // Estados de filtros
   const [busquedaRecurrente, setBusquedaRecurrente] = useState('');
   const [filtroMovimientos, setFiltroMovimientos] = useState<'todos' | 'ingreso' | 'egreso'>('todos');
+
+  // Escuchar eventos desde SubcuentaDetalleModal
+  useEffect(() => {
+    const handleOpenMovement = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setSubcuentaIdParaMovimiento(detail.subcuentaId);
+      if (detail.tipo === 'ingreso') {
+        setModalIngresoOpen(true);
+      } else {
+        setModalEgresoOpen(true);
+      }
+    };
+
+    const handleOpenRecurrente = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setSubcuentaIdParaMovimiento(detail.subcuentaId);
+      setModalRecurrenteOpen(true);
+    };
+
+    window.addEventListener('openMovementModal', handleOpenMovement);
+    window.addEventListener('openRecurrenteModal', handleOpenRecurrente);
+
+    return () => {
+      window.removeEventListener('openMovementModal', handleOpenMovement);
+      window.removeEventListener('openRecurrenteModal', handleOpenRecurrente);
+    };
+  }, []);
 
   // Función para refrescar todos los datos
   const refrescarDatos = () => {
@@ -97,24 +133,89 @@ export default function Dashboard() {
   };
 
   // Funciones de edición y eliminación
+  const handleVerDetalleSubcuenta = (subcuenta: Subcuenta) => {
+    setSubcuentaSeleccionada(subcuenta);
+    setModalSubcuentaDetalleOpen(true);
+  };
+
   const handleEditarSubcuenta = (subcuenta: Subcuenta) => {
+    setModalSubcuentaDetalleOpen(false);
+    setSubcuentaSeleccionada(null);
     console.log('Editar subcuenta:', subcuenta);
     setModalSubcuentaOpen(true);
   };
 
+  const handleEliminarSubcuenta = async (id: string) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL || 'https://litfinance-api-production.up.railway.app'}/subcuenta/${id}`,
+        {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!response.ok) throw new Error('Error al eliminar');
+      refrescarDatos();
+    } catch (error) {
+      console.error('Error al eliminar subcuenta:', error);
+      alert('Error al eliminar la subcuenta');
+    }
+  };
+
+  const handleToggleEstadoSubcuenta = async (subcuenta: Subcuenta) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const endpoint = `${import.meta.env.VITE_API_BASE_URL || 'https://litfinance-api-production.up.railway.app'}/subcuenta/${subcuenta.subCuentaId}/${subcuenta.activa ? 'desactivar' : 'activar'}`;
+      const response = await fetch(endpoint, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!response.ok) throw new Error('Error al cambiar estado');
+      queryClient.invalidateQueries({ queryKey: ['subcuentas'] });
+      refrescarDatos();
+      // No cerramos el modal para que el usuario vea el cambio de estado
+    } catch (error) {
+      console.error('Error al cambiar estado de subcuenta:', error);
+      alert('Error al cambiar estado de la subcuenta');
+    }
+  };
+
+  const handleVerDetalleRecurrente = (recurrente: Recurrente) => {
+    setRecurrenteSeleccionado(recurrente);
+    setModalRecurrenteDetalleOpen(true);
+  };
+
   const handleEditarRecurrente = (recurrente: Recurrente) => {
+    setModalRecurrenteDetalleOpen(false);
+    setRecurrenteSeleccionado(null);
     console.log('Editar recurrente:', recurrente);
     setModalRecurrenteOpen(true);
   };
 
   const handleEliminarRecurrente = async (id: string) => {
-    if (!window.confirm('¿Estás seguro de eliminar este recurrente?')) return;
-    
     try {
       await eliminarMutation.mutateAsync(id);
     } catch (error) {
       console.error('Error al eliminar recurrente:', error);
       alert('Error al eliminar el recurrente');
+    }
+  };
+
+  const handleToggleEstadoRecurrente = async (recurrente: Recurrente) => {
+    try {
+      const id = recurrente.id || recurrente._id || recurrente.recurrenteId || '';
+      if (recurrente.pausado) {
+        await reanudarRecurrente(id);
+      } else {
+        await pausarRecurrente(id);
+      }
+      queryClient.invalidateQueries({ queryKey: ['recurrentes'] });
+      refetchRecurrentes();
+      setModalRecurrenteDetalleOpen(false);
+    } catch (error) {
+      console.error('Error al cambiar estado del recurrente:', error);
+      alert('Error al cambiar estado del recurrente');
     }
   };
 
@@ -134,15 +235,20 @@ export default function Dashboard() {
     staleTime: 1000 * 30,
   });
 
+  interface TransaccionPeriodo {
+    tipo: 'ingreso' | 'egreso';
+    monto: number;
+  }
+
   const calcularTotales = () => {
     const arr = Array.isArray(transaccionesPeriodo) ? transaccionesPeriodo : [];
     const ingresos = arr
-      .filter((t: any) => t.tipo === 'ingreso')
-      .reduce((sum: number, t: any) => sum + t.monto, 0);
+      .filter((t: TransaccionPeriodo) => t.tipo === 'ingreso')
+      .reduce((sum: number, t: TransaccionPeriodo) => sum + t.monto, 0);
 
     const egresos = arr
-      .filter((t: any) => t.tipo === 'egreso')
-      .reduce((sum: number, t: any) => sum + Math.abs(t.monto), 0);
+      .filter((t: TransaccionPeriodo) => t.tipo === 'egreso')
+      .reduce((sum: number, t: TransaccionPeriodo) => sum + Math.abs(t.monto), 0);
 
     return { ingresos, egresos };
   };
@@ -213,25 +319,25 @@ export default function Dashboard() {
               </motion.button>
             </div>
 
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-full bg-green-500/20">
-                  <ArrowUpCircle size={20} className="text-green-300" />
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-500/10 border border-green-500/20">
+                <div className="p-1 rounded-full bg-green-500/20">
+                  <ArrowUpCircle size={14} className="text-green-300" />
                 </div>
                 <div>
-                  <p className="text-white/70 text-xs">Ingreso</p>
-                  <p className="text-white font-semibold">
+                  <p className="text-white/60 text-[10px] font-medium">Ingreso</p>
+                  <p className="text-white font-bold text-sm">
                     {cuenta?.simbolo || '$'}{ingresos.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-full bg-red-500/20">
-                  <ArrowDownCircle size={20} className="text-red-300" />
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20">
+                <div className="p-1 rounded-full bg-red-500/20">
+                  <ArrowDownCircle size={14} className="text-red-300" />
                 </div>
                 <div>
-                  <p className="text-white/70 text-xs">Egreso</p>
-                  <p className="text-white font-semibold">
+                  <p className="text-white/60 text-[10px] font-medium">Egreso</p>
+                  <p className="text-white font-bold text-sm">
                     {cuenta?.simbolo || '$'}{egresos.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
@@ -239,28 +345,58 @@ export default function Dashboard() {
             </div>
 
             {/* Selector de período */}
-            <div className="mt-6 relative">
+            <div className="mt-4 relative">
               <motion.button
-                onClick={() => {
-                  const periodos = ['dia', 'semana', 'mes', '3meses', '6meses', 'año'];
-                  const currentIndex = periodos.indexOf(periodo);
-                  const nextPeriodo = periodos[(currentIndex + 1) % periodos.length];
-                  setPeriodo(nextPeriodo);
-                }}
+                onClick={() => setPeriodoDropdownOpen(!periodoDropdownOpen)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-white"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white"
               >
-                <Calendar size={16} />
-                <span className="text-sm font-medium">
+                <Calendar size={14} />
+                <span className="text-xs font-medium">
                   {periodo === 'dia' ? 'Día' : 
                    periodo === 'semana' ? 'Semana' :
                    periodo === 'mes' ? 'Mes' :
-                   periodo === '3meses' ? '3 Meses' :
-                   periodo === '6meses' ? '6 Meses' : 'Año'}
+                   periodo === '3meses' ? '3M' :
+                   periodo === '6meses' ? '6M' : 'Año'}
                 </span>
-                <ChevronDown size={16} />
+                <ChevronDown size={14} className={`transition-transform ${periodoDropdownOpen ? 'rotate-180' : ''}`} />
               </motion.button>
+              
+              <AnimatePresence>
+                {periodoDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute top-full left-0 mt-2 min-w-[100px] bg-white dark:bg-neutral-800 rounded-lg shadow-2xl border border-white/20 overflow-hidden z-50"
+                  >
+                    {[
+                      { value: 'dia', label: 'Día' },
+                      { value: 'semana', label: 'Semana' },
+                      { value: 'mes', label: 'Mes' },
+                      { value: '3meses', label: '3M' },
+                      { value: '6meses', label: '6M' },
+                      { value: 'año', label: 'Año' },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => {
+                          setPeriodo(option.value);
+                          setPeriodoDropdownOpen(false);
+                        }}
+                        className={`w-full px-3 py-2 text-left text-xs font-medium transition-all ${
+                          periodo === option.value
+                            ? 'bg-primary/10 text-primary'
+                            : 'text-content hover:bg-content/5'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             </div>
           </motion.div>
@@ -350,6 +486,7 @@ export default function Dashboard() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.5 + index * 0.1 }}
                     whileHover={{ scale: 1.02 }}
+                    onClick={() => handleVerDetalleRecurrente(item)}
                     className="p-4 rounded-xl border-2 border-green-500/30 bg-green-500/5 hover:bg-green-500/10 transition-all cursor-pointer"
                   >
                     <div className="flex items-center justify-between mb-2">
@@ -410,8 +547,12 @@ export default function Dashboard() {
               onOpenModal={() => setModalSubcuentaOpen(true)}
               onEditSubcuenta={handleEditarSubcuenta}
               onSubcuentaChange={refrescarDatos}
+              onViewDetalle={handleVerDetalleSubcuenta}
             />
           </div>
+
+          {/* Gráfica de Análisis */}
+          <ExpensesChart refreshKey={Date.now()} />
 
           {/* Movimientos */}
           <motion.div
@@ -494,9 +635,21 @@ export default function Dashboard() {
                     </div>
                   );
                 }
+                interface MovimientoItem {
+                  id?: string;
+                  _id?: string;
+                  tipo: string;
+                  descripcion?: string;
+                  concepto?: string;
+                  motivo?: string;
+                  moneda?: string;
+                  monto: number;
+                  fecha?: string;
+                  createdAt?: string;
+                }
                 let lista = Array.isArray(movimientos) ? movimientos : [];
                 if (filtroMovimientos !== 'todos') {
-                  lista = lista.filter((t: any) => t.tipo === filtroMovimientos);
+                  lista = lista.filter((t: MovimientoItem) => t.tipo === filtroMovimientos);
                 }
                 if (lista.length === 0) {
                   return (
@@ -505,7 +658,7 @@ export default function Dashboard() {
                     </div>
                   );
                 }
-                return lista.slice(0, 10).map((mov: any, index: number) => {
+                return lista.slice(0, 10).map((mov: MovimientoItem, index: number) => {
                   let icon = null;
                   let color = '';
                   let bg = '';
@@ -604,24 +757,34 @@ export default function Dashboard() {
         <>
           <CrearIngresoModal 
             isOpen={modalIngresoOpen}
-            onClose={() => setModalIngresoOpen(false)}
+            onClose={() => {
+              setModalIngresoOpen(false);
+              setSubcuentaIdParaMovimiento(undefined);
+            }}
             onSuccess={() => {
               refrescarDatos();
               setModalIngresoOpen(false);
+              setSubcuentaIdParaMovimiento(undefined);
             }}
             monedaPrincipal={cuenta.nombre}
             simbolo="$"
+            subcuentaIdPreseleccionada={subcuentaIdParaMovimiento}
           />
 
           <CrearEgresoModal 
             isOpen={modalEgresoOpen}
-            onClose={() => setModalEgresoOpen(false)}
+            onClose={() => {
+              setModalEgresoOpen(false);
+              setSubcuentaIdParaMovimiento(undefined);
+            }}
             onSuccess={() => {
               refrescarDatos();
               setModalEgresoOpen(false);
+              setSubcuentaIdParaMovimiento(undefined);
             }}
             monedaPrincipal={cuenta.nombre}
             simbolo="$"
+            subcuentaIdPreseleccionada={subcuentaIdParaMovimiento}
           />
 
           <CrearSubcuentaModal 
@@ -638,14 +801,43 @@ export default function Dashboard() {
 
           <CrearRecurrenteModal 
             isOpen={modalRecurrenteOpen}
-            onClose={() => setModalRecurrenteOpen(false)}
+            onClose={() => {
+              setModalRecurrenteOpen(false);
+              setSubcuentaIdParaMovimiento(undefined);
+            }}
             onSuccess={() => {
               refrescarDatos();
               setModalRecurrenteOpen(false);
+              setSubcuentaIdParaMovimiento(undefined);
             }}
             cuentaId={cuenta._id}
             monedaPrincipal={cuenta.nombre}
             simbolo="$"
+            subcuentaIdPreseleccionada={subcuentaIdParaMovimiento}
+          />
+
+          <RecurrenteDetalleModal
+            isOpen={modalRecurrenteDetalleOpen}
+            onClose={() => {
+              setModalRecurrenteDetalleOpen(false);
+              setRecurrenteSeleccionado(null);
+            }}
+            recurrente={recurrenteSeleccionado}
+            onEdit={handleEditarRecurrente}
+            onDelete={handleEliminarRecurrente}
+            onToggleEstado={handleToggleEstadoRecurrente}
+          />
+
+          <SubcuentaDetalleModal
+            isOpen={modalSubcuentaDetalleOpen}
+            onClose={() => {
+              setModalSubcuentaDetalleOpen(false);
+              setSubcuentaSeleccionada(null);
+            }}
+            subcuenta={subcuentaSeleccionada}
+            onEdit={handleEditarSubcuenta}
+            onDelete={handleEliminarSubcuenta}
+            onToggleEstado={handleToggleEstadoSubcuenta}
           />
         </>
       )}

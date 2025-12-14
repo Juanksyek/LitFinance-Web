@@ -16,14 +16,10 @@ interface CrearSubcuentaModalProps {
 }
 
 const COLORES_DISPONIBLES = [
-  { nombre: 'Verde', valor: '#4CAF50' },
-  { nombre: 'Azul', valor: '#2196F3' },
-  { nombre: 'Naranja', valor: '#FF9800' },
-  { nombre: 'Rojo', valor: '#F44336' },
-  { nombre: 'Morado', valor: '#9C27B0' },
-  { nombre: 'Rosa', valor: '#E91E63' },
-  { nombre: 'Cyan', valor: '#00BCD4' },
-  { nombre: 'Amarillo', valor: '#FFC107' },
+  "#4CAF50", "#EF6C00", "#1976D2",
+  "#9C27B0", "#FFEB3B", "#E91E63",
+  "#795548", "#00BCD4", "#F44336",
+  "#3F51B5", "#607D8B", "#8BC34A",
 ];
 
 export default function CrearSubcuentaModal({
@@ -45,7 +41,7 @@ export default function CrearSubcuentaModal({
   const [formData, setFormData] = useState({
     nombre: '',
     cantidad: '',
-    color: 'Verde',
+    color: '#4CAF50',
     afectaCuenta: true,
   });
 
@@ -78,7 +74,7 @@ export default function CrearSubcuentaModal({
       setFormData({
         nombre: '',
         cantidad: '',
-        color: 'Verde',
+        color: '#4CAF50',
         afectaCuenta: true,
       });
 
@@ -153,19 +149,19 @@ export default function CrearSubcuentaModal({
             <Palette size={16} className="inline mr-1" />
             Color
           </label>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="flex flex-wrap gap-3">
             {COLORES_DISPONIBLES.map((color) => (
               <button
-                key={color.valor}
+                key={color}
                 type="button"
-                onClick={() => setFormData({ ...formData, color: color.nombre })}
-                className={`h-12 rounded-xl transition-all ${
-                  formData.color === color.nombre
-                    ? 'ring-4 ring-offset-2 ring-primary ring-offset-bg'
+                onClick={() => setFormData({ ...formData, color })}
+                className={`w-8 h-8 rounded-full transition-all ${
+                  formData.color === color
+                    ? 'ring-3 ring-content scale-110'
                     : 'hover:scale-105'
                 }`}
-                style={{ backgroundColor: color.valor }}
-                title={color.nombre}
+                style={{ backgroundColor: color }}
+                title={color}
               />
             ))}
           </div>

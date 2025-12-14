@@ -15,6 +15,7 @@ interface CrearEgresoModalProps {
   monedaPrincipal: string;
   simbolo: string;
   subcuentas?: Array<{ id?: string; _id?: string; subCuentaId?: string; nombre: string }>;
+  subcuentaIdPreseleccionada?: string;
 }
 
 export default function CrearEgresoModal({
@@ -24,6 +25,7 @@ export default function CrearEgresoModal({
   monedaPrincipal,
   simbolo,
   subcuentas = [],
+  subcuentaIdPreseleccionada,
 }: CrearEgresoModalProps) {
   const [cuentaId, setCuentaId] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -56,8 +58,15 @@ export default function CrearEgresoModal({
     monto: '',
     motivo: '',
     afectaCuenta: true,
-    subCuentaId: '',
+    subCuentaId: subcuentaIdPreseleccionada || '',
   });
+
+  // Actualizar subCuentaId cuando cambie subcuentaIdPreseleccionada
+  useEffect(() => {
+    if (subcuentaIdPreseleccionada) {
+      setFormData(prev => ({ ...prev, subCuentaId: subcuentaIdPreseleccionada }));
+    }
+  }, [subcuentaIdPreseleccionada]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

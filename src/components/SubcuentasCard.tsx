@@ -9,12 +9,14 @@ interface SubcuentasCardProps {
   onOpenModal: () => void;
   onEditSubcuenta?: (subcuenta: Subcuenta) => void;
   onSubcuentaChange?: () => void;
+  onViewDetalle?: (subcuenta: Subcuenta) => void;
 }
 
 export default function SubcuentasCard({ 
   onOpenModal, 
   onEditSubcuenta,
-  onSubcuentaChange 
+  onSubcuentaChange,
+  onViewDetalle
 }: SubcuentasCardProps) {
   const { cuentaPrincipal } = useAuth();
   const [subcuentas, setSubcuentas] = useState<Subcuenta[]>([]);
@@ -175,6 +177,7 @@ export default function SubcuentasCard({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
                 whileHover={{ scale: 1.02 }}
+                onClick={() => onViewDetalle?.(item)}
                 className={`p-4 rounded-xl border-2 ${colorClasses} ${
                   !item.activa && 'opacity-60'
                 } transition-all cursor-pointer`}
