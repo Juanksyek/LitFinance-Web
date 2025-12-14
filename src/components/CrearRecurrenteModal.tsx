@@ -13,6 +13,7 @@ interface CrearRecurrenteModalProps {
   monedaPrincipal: string;
   simbolo: string;
   subcuentas?: Array<{ id?: string; _id?: string; subCuentaId?: string; nombre: string }>;
+  subcuentaIdPreseleccionada?: string;
 }
 
 export default function CrearRecurrenteModal({
@@ -23,6 +24,7 @@ export default function CrearRecurrenteModal({
   monedaPrincipal,
   simbolo,
   subcuentas = [],
+  subcuentaIdPreseleccionada,
 }: CrearRecurrenteModalProps) {
   const [loading, setLoading] = useState(false);
   const [plataformas, setPlataformas] = useState<PlataformaRecurrente[]>([]);
@@ -33,12 +35,23 @@ export default function CrearRecurrenteModal({
     frecuenciaTipo: 'dia_mes' as 'dia_mes' | 'dia_semana' | 'fecha_fija',
     frecuenciaValor: '',
     afectaCuentaPrincipal: true,
-    afectaSubcuenta: false,
-    subcuentaId: '',
+    afectaSubcuenta: !!subcuentaIdPreseleccionada,
+    subcuentaId: subcuentaIdPreseleccionada || '',
     recordatorio1: false,
     recordatorio3: false,
     recordatorio7: false,
   });
+
+  // Actualizar subcuentaId cuando cambie subcuentaIdPreseleccionada
+  useEffect(() => {
+    if (subcuentaIdPreseleccionada) {
+      setFormData(prev => ({ 
+        ...prev, 
+        subcuentaId: subcuentaIdPreseleccionada,
+        afectaSubcuenta: true 
+      }));
+    }
+  }, [subcuentaIdPreseleccionada]);
 
   useEffect(() => {
     if (isOpen) {
