@@ -1,9 +1,6 @@
 // 🛤️ Configuración de Rutas - LitFinance Web
 import React from 'react';
-import { ReportsPage } from '../pages/Reports';
 import Home from '../pages/Home';
-import Analytics from '../pages/Analytics';
-import Historial from '../pages/Historial';
 
 export interface RouteConfig {
   path: string;
@@ -22,27 +19,7 @@ export const routes: RouteConfig[] = [
     description: 'Plataforma financiera personal inteligente',
     isPublic: true
   },
-  {
-    path: '/reports',
-    component: ReportsPage,
-    title: 'LitFinance - Sistema de Reportes',
-    description: 'Centro de reportes y soporte técnico',
-    isPublic: true
-  },
-  {
-    path: '/analytics',
-    component: Analytics,
-    title: 'LitFinance - Analíticas',
-    description: 'Visualización de patrones financieros y estadísticas',
-    requiresAuth: true
-  },
-  {
-    path: '/historial',
-    component: Historial,
-    title: 'LitFinance - Historial',
-    description: 'Historial completo de transacciones',
-    requiresAuth: true
-  }
+  // Post-login pages removed per cleanup; keep home only for now
 ];
 
 /**
@@ -130,7 +107,6 @@ export const getBreadcrumbs = (path: string): Array<{ label: string; path: strin
 export const getNavigationLinks = () => {
   const links = [
     { label: '🏠 Inicio', path: '/', icon: '🏠' },
-    { label: '📋 Reportes', path: '/reports', icon: '📋' },
     { label: '📱 Descargar App', path: '/#download', icon: '📱' },
     { label: 'ℹ️ Acerca de', path: '/#about', icon: 'ℹ️' }
   ];
