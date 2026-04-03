@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
-import { obtenerCuentaPrincipal } from '../services/cuentaService';
 import { apiRequest } from '../services/monedaService';
 import type { Moneda } from '../types/moneda';
 
@@ -51,14 +50,19 @@ export default function SelectorMoneda({
       );
       setFavoritas((res.favoritas || []).sort((a: Moneda, b: Moneda) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' })));
       setOtras((res.otras || []).sort((a: Moneda, b: Moneda) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' })));
-      const cuenta = await obtenerCuentaPrincipal();
-      if (cuenta && cuenta.moneda && cuenta.simbolo) {
-        setMonedaPrincipal({
-          id: cuenta.id || cuenta._id || 'principal',
-          codigo: cuenta.moneda,
-          nombre: cuenta.moneda,
-          simbolo: cuenta.simbolo,
-        });
+      try {
+        const stored = localStorage.getItem('cuentaPrincipal');
+        const cuenta = stored ? JSON.parse(stored) : null;
+        if (cuenta && cuenta.moneda && cuenta.simbolo) {
+          setMonedaPrincipal({
+            id: cuenta.id || cuenta._id || 'principal',
+            codigo: cuenta.moneda,
+            nombre: cuenta.moneda,
+            simbolo: cuenta.simbolo,
+          });
+        }
+      } catch (e) {
+        setMonedaPrincipal(null);
       }
     } catch (error) {
       console.error('Error cargando monedas:', error);
