@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ThemeToggle from './ThemeToggle'
 import { Download, Menu, X, Smartphone } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import LanguageSelector from './LanguageSelector'
 import { useI18n } from '../hooks/useI18n'
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { t } = useI18n();
+  const { t } = useI18n() ?? { t: (key: string) => key };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,12 +84,6 @@ export default function Navbar() {
           {/* Desktop Actions */}
           <div className="hidden xl:flex items-center gap-2 2xl:gap-3">
             <LanguageSelector />
-            <Link to="/login" className="btn btn-secondary text-sm px-3 py-1.5">
-              {t('auth.login')}
-            </Link>
-            <Link to="/register" className="btn btn-primary text-sm px-3 py-1.5">
-              {t('auth.register')}
-            </Link>
             <ThemeToggle />
             <motion.a 
               href="#descargas" 
@@ -167,12 +160,6 @@ export default function Navbar() {
                     </motion.a>
                   ))}
                 </nav>
-                <Link to="/login" className="btn btn-secondary w-full mb-2" onClick={() => setIsMobileMenuOpen(false)}>
-                  {t('auth.login')}
-                </Link>
-                <Link to="/register" className="btn btn-primary w-full mb-4" onClick={() => setIsMobileMenuOpen(false)}>
-                  {t('auth.register')}
-                </Link>
                 <motion.a 
                   href="#descargas" 
                   className="btn btn-primary w-full justify-center shadow-lg shadow-primary/25"
