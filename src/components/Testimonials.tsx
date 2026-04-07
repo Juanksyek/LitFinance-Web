@@ -1,6 +1,7 @@
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
-import { Star, Quote, ChevronLeft, ChevronRight, Heart, User, ThumbsUp, Headphones, Smile, Smartphone, Bot, Globe, MessageCircle } from 'lucide-react'
+import { Star, Quote, ChevronLeft, ChevronRight, Heart, User, ThumbsUp, Headphones, Smile, Bot, Globe, MessageCircle } from 'lucide-react'
+import { AndroidLogo, AppleLogo } from './PlatformIcon'
 
 const testimonials = [
   {
@@ -82,7 +83,7 @@ export default function Testimonials() {
   }
 
   return (
-    <section ref={ref} className="py-24 relative overflow-hidden">
+    <section ref={ref} className="py-12 sm:py-16 md:py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/5" />
       
       <div className="container-app">
@@ -97,13 +98,13 @@ export default function Testimonials() {
             <Heart size={16} />
             Lo que dicen nuestros usuarios
           </div>
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
             Historias reales,{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/70">
               resultados reales
             </span>
           </h2>
-          <p className="text-xl text-content/70 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-content/70 max-w-2xl mx-auto px-2">
             Más de 50,000 usuarios ya transformaron su relación con el dinero
           </p>
         </motion.div>
@@ -119,7 +120,7 @@ export default function Testimonials() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
-                className="bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-3xl p-8 lg:p-12 border border-white/20 dark:border-white/10 text-center"
+                className="bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-12 border border-white/20 dark:border-white/10 text-center"
                 initial={{ opacity: 0, x: 100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -100 }}
@@ -148,7 +149,7 @@ export default function Testimonials() {
                 </div>
 
                 {/* Testimonial Text */}
-                <blockquote className="text-2xl lg:text-3xl font-medium leading-relaxed mb-8 text-content">
+                <blockquote className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-medium leading-relaxed mb-6 sm:mb-8 text-content">
                   "{testimonials[currentIndex].text}"
                 </blockquote>
 
@@ -173,14 +174,14 @@ export default function Testimonials() {
 
             <button
               onClick={prevTestimonial}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20 dark:border-white/10 hover:bg-primary hover:text-white transition-all duration-300"
+              className="absolute -left-2 sm:left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20 dark:border-white/10 hover:bg-primary hover:text-white transition-all duration-300 z-10"
             >
               <ChevronLeft size={20} />
             </button>
 
             <button
               onClick={nextTestimonial}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20 dark:border-white/10 hover:bg-primary hover:text-white transition-all duration-300"
+              className="absolute -right-2 sm:right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20 dark:border-white/10 hover:bg-primary hover:text-white transition-all duration-300 z-10"
             >
               <ChevronRight size={20} />
             </button>
@@ -210,7 +211,7 @@ export default function Testimonials() {
         </motion.div>
 
         <motion.div 
-          className="grid grid-cols-2 md:grid-cols-4 gap-8"
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8"
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.6 }}
@@ -223,12 +224,12 @@ export default function Testimonials() {
           ].map((stat, index) => (
             <motion.div
               key={index}
-              className="text-center p-6 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/20 dark:border-white/10"
+              className="text-center p-4 sm:p-6 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/20 dark:border-white/10"
               whileHover={{ y: -5, scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               <div className="mb-2">{stat.icon}</div>
-              <div className="text-2xl font-bold text-primary mb-1">{stat.value}</div>
+              <div className="text-xl sm:text-2xl font-bold text-primary mb-1">{stat.value}</div>
               <div className="text-sm text-content/70">{stat.label}</div>
             </motion.div>
           ))}
@@ -241,12 +242,12 @@ export default function Testimonials() {
           transition={{ duration: 0.6, delay: 0.8 }}
         >
           <p className="text-content/60 mb-4">También nos puedes encontrar en:</p>
-          <div className="flex justify-center items-center gap-8">
+          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 md:gap-8">
             {[
-              { icon: <Smartphone size={16} />, text: 'App Store' },
-              { icon: <Bot size={16} />, text: 'Google Play' },
-              { icon: <Globe size={16} />, text: 'Web' },
-              { icon: <MessageCircle size={16} />, text: 'Redes Sociales' }
+              { icon: <AppleLogo size={16} />, text: 'App Store' },
+                { icon: <AndroidLogo size={16} />, text: 'Google Play' },
+                { icon: <Globe size={16} />, text: 'Web' },
+                { icon: <MessageCircle size={16} />, text: 'Redes Sociales' }
             ].map((platform, index) => (
               <motion.span
                 key={index}
