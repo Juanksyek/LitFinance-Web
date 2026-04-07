@@ -66,3 +66,31 @@ body {
 .muted {
   @apply text-sm text-muted;
 }
+
+/* ====== Custom Scrollbar ====== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #ef7725;
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4611a;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #ef7725cc;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #ef7725;
+}
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #ef7725 transparent;
+}
