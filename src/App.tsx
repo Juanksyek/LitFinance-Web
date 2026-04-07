@@ -6,6 +6,17 @@ import SmoothScroll from './components/SmoothScroll'
 import { I18nProvider } from './contexts/I18nContext'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import TermsAndConditions from './components/TermsAndConditions'
+import PrivacyPolicy from './components/PrivacyPolicy'
+
+function PageLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <Navbar />
+      <main className="min-h-screen pt-20">{children}</main>
+      <Footer />
+    </>
+  )
+}
 
 export default function App() {
   return (
@@ -16,23 +27,25 @@ export default function App() {
         <Routes>
           {/* Rutas de activación */}
           <Route path="/activate/:token" element={<Activate />} />
-            <Route path="/activate" element={<Activate />} />
+          <Route path="/activate" element={<Activate />} />
             
-            {/* Rutas de autenticación (sin navbar/footer) */}
-            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          {/* Rutas legales standalone (para navegación in-app) */}
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/terminos" element={<PageLayout><TermsAndConditions /></PageLayout>} />
+          <Route path="/privacidad" element={<PageLayout><PrivacyPolicy /></PageLayout>} />
 
-            {/* Rutas públicas con navbar y footer */}
-            <Route
-              path="/"
-              element={
-                <>
-                  <Navbar />
-                  <Home />
-                  <Footer />
-                </>
-              }
-            />
-          </Routes>
+          {/* Ruta principal */}
+          <Route
+            path="/"
+            element={
+              <>
+                <Navbar />
+                <Home />
+                <Footer />
+              </>
+            }
+          />
+        </Routes>
       </I18nProvider>
     </Router>
   )
