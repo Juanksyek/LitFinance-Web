@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ThemeToggle from './ThemeToggle'
-import { Download, Menu, X, Smartphone } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Download, Menu, X } from 'lucide-react'
+import { AndroidLogo } from './PlatformIcon' // AppleLogo
 import LanguageSelector from './LanguageSelector'
 import { useI18n } from '../hooks/useI18n'
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { t } = useI18n();
+  const { t } = useI18n() ?? { t: (key: string) => key };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,7 +24,7 @@ export default function Navbar() {
     { href: "#features", label: "Características" },
     { href: "#gallery", label: "Galería" },
     { href: "#specs", label: "Especificaciones" },
-    { href: "#testimonials", label: "Testimonios" },
+    //{ href: "#testimonials", label: "Testimonios" },
     { href: "#descargas", label: "Descargar" }
   ]
 
@@ -40,7 +40,7 @@ export default function Navbar() {
       transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
     >
       <div className="container-app">
-        <div className="flex h-16 lg:h-20 items-center justify-between">
+        <div className="flex h-14 sm:h-16 lg:h-20 items-center justify-between">
           {/* Logo */}
           <motion.a 
             href="#" 
@@ -52,12 +52,12 @@ export default function Navbar() {
               <img 
                 src="/images/LitFinance-vector.png" 
                 alt="LitFinance" 
-                className="h-15 w-15 rounded-xl shadow-lg group-hover:shadow-primary/25 transition-shadow"
+                className="h-10 w-10 sm:h-15 sm:w-15 rounded-xl shadow-lg group-hover:shadow-primary/25 transition-shadow"
               />
             </div>
             <div>
-              <span className="font-bold text-lg">LitFinance</span>
-              <div className="text-xs text-primary font-medium">Alfa</div>
+              <span className="font-bold text-base sm:text-lg">LitFinance</span>
+              <div className="text-[10px] sm:text-xs text-primary font-medium">Alfa</div>
             </div>
           </motion.a>
 
@@ -85,12 +85,6 @@ export default function Navbar() {
           {/* Desktop Actions */}
           <div className="hidden xl:flex items-center gap-2 2xl:gap-3">
             <LanguageSelector />
-            <Link to="/login" className="btn btn-secondary text-sm px-3 py-1.5">
-              {t('auth.login')}
-            </Link>
-            <Link to="/register" className="btn btn-primary text-sm px-3 py-1.5">
-              {t('auth.register')}
-            </Link>
             <ThemeToggle />
             <motion.a 
               href="#descargas" 
@@ -98,7 +92,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Smartphone size={16} />
+              <AndroidLogo size={16} />
               <span className="hidden 2xl:inline">{t('nav.downloadApp')}</span>
               <span className="xl:inline 2xl:hidden">App</span>
             </motion.a>
@@ -167,12 +161,6 @@ export default function Navbar() {
                     </motion.a>
                   ))}
                 </nav>
-                <Link to="/login" className="btn btn-secondary w-full mb-2" onClick={() => setIsMobileMenuOpen(false)}>
-                  {t('auth.login')}
-                </Link>
-                <Link to="/register" className="btn btn-primary w-full mb-4" onClick={() => setIsMobileMenuOpen(false)}>
-                  {t('auth.register')}
-                </Link>
                 <motion.a 
                   href="#descargas" 
                   className="btn btn-primary w-full justify-center shadow-lg shadow-primary/25"

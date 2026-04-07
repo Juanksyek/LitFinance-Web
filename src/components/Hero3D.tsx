@@ -1,320 +1,198 @@
-import { Suspense, useState, useEffect } from 'react'
-import { Canvas } from '@react-three/fiber'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowRight, Sparkles, Play, TrendingUp, DollarSign, Building2, Star } from 'lucide-react'
-import PhoneModel3D from './PhoneModel3D'
+import { ArrowRight, Sparkles, TrendingUp, DollarSign, Star, Users } from 'lucide-react'
+import { AndroidLogo } from './PlatformIcon' // AppleLogo
+import PixelPhoneMockup from './PixelPhoneMockup'
 
 export default function Hero3D() {
-  const [currentPhone, setCurrentPhone] = useState({ name: 'iPhone 14 Pro', brand: 'Apple' })
-  const [manualRotation, setManualRotation] = useState<{ x: number, y: number } | undefined>(undefined)
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const { scrollY } = useScroll()
-  
-  const y = useTransform(scrollY, [0, 500], [0, -150])
-  const opacity = useTransform(scrollY, [0, 300], [1, 0])
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        const deltaX = e.clientX - dragStart.x
-        const deltaY = e.clientY - dragStart.y
-        setManualRotation({
-          x: deltaY * 0.01,
-          y: deltaX * 0.01
-        })
-      }
-    }
-
-    const handleMouseUp = () => {
-      setIsDragging(false)
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseup', handleMouseUp)
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseup', handleMouseUp)
-    }
-  }, [isDragging, dragStart])
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true)
-    setDragStart({ x: e.clientX, y: e.clientY })
-  }
+  const y = useTransform(scrollY, [0, 500], [0, -80])
+  const opacity = useTransform(scrollY, [0, 400], [1, 0])
 
   return (
-    <motion.section 
+    <motion.section
       className="relative min-h-screen flex items-center overflow-hidden"
       style={{ y, opacity }}
     >
       {/* Background gradients */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/10 dark:from-primary/30 dark:to-primary/20" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(239,119,37,0.1),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(239,119,37,0.05),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(239,119,37,0.15),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(239,119,37,0.08),transparent_50%)]" />
+        <motion.div
+          className="absolute top-1/4 left-1/4 w-48 sm:w-72 lg:w-96 h-48 sm:h-72 lg:h-96 bg-primary/10 rounded-full blur-3xl"
+          animate={{ x: [0, 40, 0], y: [0, -20, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute bottom-1/4 right-1/4 w-32 sm:w-48 lg:w-64 h-32 sm:h-48 lg:h-64 bg-blue-500/10 rounded-full blur-3xl"
+          animate={{ x: [0, -30, 0], y: [0, 30, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        />
       </div>
 
-      <div className="container-app relative">
-        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-20">
-          {/* Left Content */}
-          <motion.div 
-            className="space-y-8"
-            initial={{ opacity: 0, x: -50 }}
+      <div className="container-app relative w-full">
+        {/* ── Mobile layout: stacked column ── */}
+        <div className="flex flex-col lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center min-h-screen py-20 sm:py-24 lg:py-16 gap-6">
+
+          {/* ── Left: Text content ── */}
+          <motion.div
+            className="flex flex-col gap-5 sm:gap-6 text-center lg:text-left items-center lg:items-start"
+            initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
+            {/* Badge */}
+            <motion.span
+              className="badge inline-flex items-center gap-2 text-xs sm:text-sm"
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
             >
-              <span className="badge mb-6 inline-flex items-center gap-2">
-                <Sparkles size={16} /> 
-                Nuevo en la App Store
-              </span>
-            </motion.div>
+              <Sparkles size={14} />
+              Nuevo en Play Store, próximamente en App Store
+            </motion.span>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
+            {/* Headline */}
+            <motion.h1
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.1] tracking-tight"
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-tight">
-                Controla tus{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/70">
-                  finanzas
-                </span>
-                <br />
-                sin complicarte
-              </h1>
-            </motion.div>
+              Controla tus{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/70">
+                finanzas
+              </span>
+              <br className="hidden sm:block" />{' '}
+              sin complicarte
+            </motion.h1>
 
-            <motion.p 
-              className="text-xl text-content/70 max-w-lg leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
+            {/* Sub text */}
+            <motion.p
+              className="text-sm sm:text-base md:text-lg text-content/70 max-w-md leading-relaxed"
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.7 }}
             >
-              Subcuentas inteligentes, pagos recurrentes automatizados, 
-              reportes visuales y más. Todo en una sola app elegante y segura.
+              Cuentas inteligentes, control de pagos recurrentes,
+              reportes visuales y más. Todo en una sola app rápida y segura.
             </motion.p>
 
-            <motion.div 
-              className="flex flex-col sm:flex-row gap-4"
-              initial={{ opacity: 0, y: 20 }}
+            {/* CTA buttons */}
+            <motion.div
+              className="flex flex-col xs:flex-row gap-3 w-full xs:w-auto"
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.9 }}
             >
-              <motion.a 
-                href="#descargas" 
-                className="btn btn-primary text-lg px-8 py-4 shadow-xl shadow-primary/25"
+              <motion.a
+                href="#descargas"
+                className="btn btn-primary text-sm sm:text-base px-6 py-3 shadow-lg shadow-primary/25 w-full xs:w-auto justify-center"
                 whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
+                whileTap={{ scale: 0.97 }}
               >
-                Descargar gratis 
-                <ArrowRight size={20} />
+                Descargar gratis
+                <ArrowRight size={18} />
               </motion.a>
-              
-              <motion.button 
-                className="btn btn-ghost text-lg px-8 py-4 border border-content/10"
-                whileHover={{ scale: 1.02, backgroundColor: 'rgba(239, 119, 37, 0.05)' }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Play size={18} />
-                Ver demo
-              </motion.button>
             </motion.div>
 
-            <motion.div 
-              className="flex items-center gap-8 pt-4"
+            {/* Stats row */}
+            <motion.div
+              className="flex items-center justify-center lg:justify-start gap-6 sm:gap-8 pt-2 flex-wrap"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1.1 }}
             >
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">50K+</div>
-                <div className="text-sm text-content/60">Descargas</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">4.8</div>
-                <div className="text-sm text-content/60 flex items-center gap-1">
-                  <Star size={14} className="text-yellow-500" /> Rating
+              {[
+                { val: '--', label: 'Descargas' },
+                { val: '-.-', label: 'Rating', star: true },
+                { val: '--%', label: 'Satisfacción' },
+              ].map(({ val, label, star }) => (
+                <div key={label} className="text-center">
+                  <div className="text-lg sm:text-xl font-bold text-primary">{val}</div>
+                  <div className="text-xs text-content/60 flex items-center justify-center gap-1">
+                    {star && <Star size={12} className="text-yellow-500" />}
+                    {label}
+                  </div>
                 </div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">99%</div>
-                <div className="text-sm text-content/60">Satisfacción</div>
-              </div>
+              ))}
             </motion.div>
 
-            <motion.div 
-              className="text-xs uppercase tracking-wider text-muted pt-4 border-t border-content/10"
+            {/* Footer note */}
+            <motion.p
+              className="text-[11px] uppercase tracking-wider text-muted pt-2 border-t border-content/10 w-full text-center lg:text-left"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1.3 }}
             >
-              Hecho con cariño, de México para el mundo
-            </motion.div>
+              Hecho con ❤️ en México
+            </motion.p>
           </motion.div>
 
-          {/* Right - 3D Phone */}
-          <motion.div 
-            className="relative h-[700px] lg:h-[800px] w-full"
-            initial={{ opacity: 0, scale: 0.8 }}
+          {/* ── Right: Phone + floating chips ── */}
+          <motion.div
+            className="relative flex items-center justify-center w-full"
+            initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.8 }}
           >
-            <Suspense fallback={
-              <div className="flex items-center justify-center h-full">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-              </div>
-            }>
-              <div 
-                onMouseDown={handleMouseDown}
-                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-                className="w-full h-full"
-              >
-                <Canvas
-                  camera={{ position: [0, 0, 12], fov: 40 }}
-                  style={{ background: 'transparent' }}
-                >
-                {/* Iluminación mejorada para teléfonos modernos */}
-                <ambientLight intensity={0.4} />
-                <directionalLight 
-                  position={[10, 10, 5]} 
-                  intensity={1.2}
-                  castShadow
-                />
-                <directionalLight 
-                  position={[-5, 8, 2]} 
-                  intensity={0.8}
-                  color="#ff9500"
-                />
-                <pointLight 
-                  position={[5, -5, 3]} 
-                  intensity={0.6}
-                  color="#ffffff"
-                />
-                <pointLight 
-                  position={[-5, 5, -3]} 
-                  intensity={0.4}
-                  color="#0096ff"
-                />
-                <spotLight
-                  position={[0, 15, 8]}
-                  angle={0.15}
-                  penumbra={1}
-                  intensity={0.8}
-                  castShadow
-                />
-                
-                <PhoneModel3D 
-                  onPhoneChange={setCurrentPhone}
-                  manualRotation={manualRotation}
-                  screenImage="/screens/ejemplo-litfinance.svg" // Imagen personalizada opcional
-                />
-                </Canvas>
-              </div>
-            </Suspense>
+            <PixelPhoneMockup showToggle />
 
-            {/* Floating elements around phone */}
+            {/* Chip – balance */}
             <motion.div
-              className="absolute top-20 left-10 bg-primary/20 backdrop-blur-sm rounded-2xl p-4 border border-primary/30"
-              animate={{ 
-                y: [0, -10, 0],
-                rotate: [0, 5, 0]
-              }}
-              transition={{ 
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
+              className="absolute top-8 -left-2 sm:left-2 lg:left-0 xl:-left-4 bg-primary/20 backdrop-blur-sm rounded-2xl p-2.5 sm:p-3 border border-primary/30 hidden sm:flex flex-col items-start gap-0.5 shadow-lg"
+              animate={{ y: [0, -8, 0], rotate: [0, 4, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <DollarSign className="text-primary mb-1" size={20} />
-              <div className="text-xs text-primary font-semibold">$1,234</div>
+              <DollarSign className="text-primary" size={18} />
+              <div className="text-xs text-primary font-semibold whitespace-nowrap">$30,540</div>
             </motion.div>
 
+            {/* Chip – trend */}
             <motion.div
-              className="absolute bottom-32 right-16 bg-green-500/20 backdrop-blur-sm rounded-2xl p-4 border border-green-500/30"
-              animate={{ 
-                y: [0, 15, 0],
-                rotate: [0, -3, 0]
-              }}
-              transition={{ 
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 1
-              }}
+              className="absolute bottom-24 sm:bottom-20 -right-2 sm:right-2 lg:right-0 xl:-right-4 bg-green-500/20 backdrop-blur-sm rounded-2xl p-2.5 sm:p-3 border border-green-500/30 hidden sm:flex flex-col items-start gap-0.5 shadow-lg"
+              animate={{ y: [0, 12, 0], rotate: [0, -3, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
             >
-              <TrendingUp className="text-green-600 mb-1" size={20} />
-              <div className="text-xs text-green-600 font-semibold">+15%</div>
+              <TrendingUp className="text-green-500" size={18} />
+              <div className="text-xs text-green-500 font-semibold">+15%</div>
             </motion.div>
 
+            {/* Chip – grupos */}
             <motion.div
-              className="absolute top-32 right-8 bg-blue-500/20 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/30"
-              animate={{ 
-                y: [0, -8, 0],
-                rotate: [0, 2, 0]
-              }}
-              transition={{ 
-                duration: 5,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 2
-              }}
+              className="absolute top-20 sm:top-24 -right-2 sm:right-2 lg:right-0 xl:-right-4 bg-purple-500/20 backdrop-blur-sm rounded-2xl p-2.5 sm:p-3 border border-purple-500/30 hidden sm:flex flex-col items-start gap-0.5 shadow-lg"
+              animate={{ y: [0, -7, 0], rotate: [0, 2, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
             >
-              <Building2 className="text-blue-600 mb-1" size={20} />
-              <div className="text-xs text-blue-600 font-semibold">Bank</div>
+              <Users className="text-purple-500" size={18} />
+              <div className="text-xs text-purple-500 font-semibold">Grupos</div>
             </motion.div>
           </motion.div>
         </div>
       </div>
 
-      {/* Phone model indicator and controls */}
-      <motion.div 
-        className="absolute bottom-20 right-8"
-        initial={{ opacity: 0, x: 50 }}
-        animate={{ opacity: 1, x: 0 }}
+      {/* Bottom platform pill */}
+      <motion.div
+        className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 1.5 }}
-        key={currentPhone.name}
       >
-        <motion.div 
-          className="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/20 dark:border-white/10"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="text-xs text-content/60 mb-1">Disponible para:</div>
-          <div className="text-sm font-semibold text-primary">{currentPhone.name}</div>
-          <div className="text-xs text-content/50">{currentPhone.brand}</div>
-          <div className="flex gap-1 mt-2 mb-3">
-            {['iPhone 15 Pro', 'Pixel 8 Pro', 'Galaxy S24 Ultra'].map((phone) => (
-              <div 
-                key={phone}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  currentPhone.name === phone 
-                    ? 'bg-primary animate-pulse' 
-                    : 'bg-primary/30'
-                }`} 
-              />
-            ))}
-          </div>
-          <div className="text-xs text-content/40 border-t border-white/10 pt-2">
-            🖱️ Arrastra para rotar • ✋ Rotación automática
-          </div>
-        </motion.div>
+        <div className="flex items-center gap-2 bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-full px-4 py-1.5 border border-white/20 dark:border-white/10 text-[11px] sm:text-xs text-content/60">
+          <AndroidLogo size={13} className="text-green-500" />
+          {/* <AppleLogo size={13} className="text-content/70" /> */}
+          <span>Disponible en Android</span>
+        </div>
       </motion.div>
 
-      {/* Scroll indicator */}
-      <motion.div 
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-        animate={{ y: [0, 10, 0] }}
+      {/* Scroll mouse indicator */}
+      <motion.div
+        className="absolute bottom-12 sm:bottom-16 left-1/2 -translate-x-1/2 hidden md:block"
+        animate={{ y: [0, 8, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
-        <div className="w-6 h-10 border-2 border-content/30 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-primary rounded-full mt-2 animate-pulse"></div>
+        <div className="w-5 h-9 border-2 border-content/25 rounded-full flex justify-center">
+          <div className="w-1 h-2.5 bg-primary rounded-full mt-1.5 animate-pulse" />
         </div>
       </motion.div>
     </motion.section>

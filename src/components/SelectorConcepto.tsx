@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Plus, X } from 'lucide-react';
-import { listarConceptos, crearConcepto, eliminarConcepto, editarConcepto } from '../services/conceptoService';
 import type { Concepto, EditarConceptoRequest } from '../types/concepto';
 import ConceptoEditable from './ConceptoEditable';
 
@@ -23,19 +22,8 @@ export default function SelectorConcepto({
 
 
   useEffect(() => {
-    // Definir la función dentro del useEffect para evitar advertencias de dependencias
-    const cargarConceptos = async () => {
-      try {
-        // Se puede ajustar el limit y skip para paginación futura
-        const response = await listarConceptos({ limit: 50, search: busqueda });
-        // Forzamos el tipado para evitar error de compilación
-        const conceptos = (response as { resultados?: Concepto[]; conceptos?: Concepto[] }).resultados || (response as { resultados?: Concepto[]; conceptos?: Concepto[] }).conceptos || [];
-        setConceptosUsuario(conceptos);
-      } catch {
-        setConceptosUsuario([]);
-      }
-    };
-    cargarConceptos();
+    // En la versión mínima actual no hay servicio de conceptos, dejamos la lista vacía
+    setConceptosUsuario([]);
   }, [busqueda]);
 
 
@@ -43,38 +31,22 @@ export default function SelectorConcepto({
   const handleCrearConcepto = async () => {
     if (!nuevoConcepto.nombre.trim()) return;
 
-    try {
-      await crearConcepto({
-        nombre: nuevoConcepto.nombre,
-        icono: nuevoConcepto.icono,
-        color: nuevoConcepto.color
-      });
-      // Recargar conceptos tras crear
-      const response = await listarConceptos({ limit: 50, search: busqueda });
-      const conceptos = (response as { resultados?: Concepto[]; conceptos?: Concepto[] })?.resultados || response?.conceptos || [];
-      setConceptosUsuario(conceptos);
-      setMostrarCrear(false);
-      setNuevoConcepto({ nombre: '', icono: '📌', color: '#FF9800' });
-      onSelect(nuevoConcepto.nombre);
-    } catch (error) {
-      console.error('Error creando concepto:', error);
-      alert('Error al crear concepto');
-    }
+    // Versión mínima: crear concepto localmente en el estado
+    const created: Concepto = {
+      _id: Date.now().toString(),
+      nombre: nuevoConcepto.nombre,
+      icono: nuevoConcepto.icono,
+      color: nuevoConcepto.color
+    } as Concepto;
+    setConceptosUsuario(prev => [created, ...prev]);
+    setMostrarCrear(false);
+    setNuevoConcepto({ nombre: '', icono: '📌', color: '#FF9800' });
+    onSelect(created.nombre);
   };
 
   const handleEliminarConcepto = async (conceptoId: string) => {
     if (!window.confirm('¿Eliminar este concepto?')) return;
-
-    try {
-      await eliminarConcepto(conceptoId);
-      // Recargar conceptos tras eliminar
-      const response = await listarConceptos({ limit: 50, search: busqueda });
-      const conceptos = (response as { resultados?: Concepto[]; conceptos?: Concepto[] })?.resultados || response?.conceptos || [];
-      setConceptosUsuario(conceptos);
-    } catch (error) {
-      console.error('Error eliminando concepto:', error);
-      alert('Error al eliminar concepto');
-    }
+    setConceptosUsuario(prev => prev.filter(c => (c._id || c.id || '') !== conceptoId));
   };
 
 
@@ -241,11 +213,7 @@ export default function SelectorConcepto({
                     onEdit={async (nuevo: EditarConceptoRequest) => {
                       const id = concepto._id || concepto.conceptoId || concepto.id || '';
                       if (!id) return;
-                      await editarConcepto(id, nuevo);
-                      // Recargar conceptos tras editar
-                      const response = await listarConceptos({ limit: 50, search: busqueda });
-                      const conceptos = (response as { resultados?: Concepto[]; conceptos?: Concepto[] })?.resultados || response?.conceptos || [];
-                      setConceptosUsuario(conceptos);
+                      setConceptosUsuario(prev => prev.map(p => (p._id === id || p.id === id || p.conceptoId === id) ? { ...p, ...nuevo } : p));
                     }}
                     onDelete={() => {
                       const id = concepto._id || concepto.conceptoId || concepto.id || '';
