@@ -1,13 +1,14 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { Apple, Smartphone, Download, Star, Shield, Zap, Rocket } from 'lucide-react'
+import { Download, Star, Shield, Zap } from 'lucide-react'
+import { AppleLogo, AndroidLogo } from './PlatformIcon'
 
 export default function DownloadSection() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.3 })
 
   return (
-    <section ref={ref} className="py-24 relative overflow-hidden">
+    <section ref={ref} className="py-12 sm:py-16 md:py-24 relative overflow-hidden">
      <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent" />
       
       <div className="container-app">
@@ -21,18 +22,18 @@ export default function DownloadSection() {
             <Download size={16} />
             Descarga Gratuita
           </div>
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
             Disponible en todas{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/70">
               tus plataformas
             </span>
           </h2>
-          <p className="text-xl text-content/70 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-content/70 max-w-2xl mx-auto px-2">
             Descarga LitFinance gratis y comienza a transformar tu relación con el dinero hoy mismo
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+        <div className="grid md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto mb-10 sm:mb-16">
           <motion.div
             className="relative group"
             initial={{ opacity: 0, y: 60 }}
@@ -40,16 +41,16 @@ export default function DownloadSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-gray-600 to-black rounded-3xl opacity-10 group-hover:opacity-20 transition-opacity" />
-            <div className="relative p-8 bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/10 overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gray-500/10 to-transparent rounded-full blur-2xl" />
+            <div className="relative p-5 sm:p-6 md:p-8 bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/10 overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-gradient-to-br from-gray-500/10 to-transparent rounded-full blur-2xl" />
               
               <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-gray-600 to-black rounded-2xl flex items-center justify-center text-white shadow-lg">
-                    <Apple size={24} />
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-gray-600 to-black rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-lg">
+                      <AppleLogo size={24} />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold">iOS</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold">iOS</h3>
                     <p className="text-content/60">iPhone y iPad</p>
                   </div>
                 </div>
@@ -65,7 +66,7 @@ export default function DownloadSection() {
                     <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
                       <div className="w-2 h-2 rounded-full bg-white" />
                     </div>
-                    <span className="text-sm">45.2 MB • Gratis</span>
+                    <span className="text-sm">150.2 MB • Gratis</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
@@ -81,7 +82,7 @@ export default function DownloadSection() {
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <Apple size={20} />
+                      <AppleLogo size={20} />
                   Descargar en App Store
                 </motion.a>
               </div>
@@ -95,16 +96,16 @@ export default function DownloadSection() {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-green-700 rounded-3xl opacity-10 group-hover:opacity-20 transition-opacity" />
-            <div className="relative p-8 bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/10 overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/10 to-transparent rounded-full blur-2xl" />
+            <div className="relative p-5 sm:p-6 md:p-8 bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/10 overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-gradient-to-br from-green-500/10 to-transparent rounded-full blur-2xl" />
               
               <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center text-white shadow-lg">
-                    <Smartphone size={24} />
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-lg">
+                      <AndroidLogo size={24} />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold">Android</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold">Android</h3>
                     <p className="text-content/60">Teléfonos y tablets</p>
                   </div>
                 </div>
@@ -120,7 +121,7 @@ export default function DownloadSection() {
                     <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
                       <div className="w-2 h-2 rounded-full bg-white" />
                     </div>
-                    <span className="text-sm">42.8 MB • Gratis</span>
+                    <span className="text-sm">150.2 MB • Gratis</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
@@ -136,7 +137,7 @@ export default function DownloadSection() {
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <Smartphone size={20} />
+                    <AndroidLogo size={20} />
                   Descargar en Google Play
                 </motion.a>
               </div>
@@ -145,7 +146,7 @@ export default function DownloadSection() {
         </div>
 
         <motion.div 
-          className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto mb-8 sm:mb-12"
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.6 }}
@@ -168,17 +169,6 @@ export default function DownloadSection() {
               <p className="text-sm text-content/60">{feature.description}</p>
             </motion.div>
           ))}
-        </motion.div>
-
-        <motion.div 
-          className="text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
-          <div className="inline-flex items-center gap-2 bg-primary/5 border border-primary/20 text-primary px-4 py-2 rounded-full text-sm">
-            <Rocket size={16} /> Próximamente: Versión web y escritorio
-          </div>
         </motion.div>
       </div>
     </section>
