@@ -1,19 +1,19 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { Wallet, Repeat, LineChart, ShieldCheck, Sparkles, Zap, Globe, Smartphone, Users, Star, Headphones } from 'lucide-react'
+import { Wallet, Repeat, LineChart, ShieldCheck, Sparkles, Zap, Globe, Users, Star, Headphones } from 'lucide-react'
 
 const features = [
   {
     icon: <Wallet className="h-8 w-8" />,
-    title: "Subcuentas Inteligentes",
-    description: "Crea espacios dedicados para cada meta: Ahorro, Viaje, Emergencias. Cada subcuenta con su saldo, historial y personalización visual.",
-    highlights: ["Ilimitadas subcuentas", "Colores personalizables", "Metas automáticas"],
+    title: "Metas de ahorro",
+    description: "Crea espacios dedicados para cada meta: Ahorro, Viaje, Emergencias. Cada meta con su saldo, historial y personalización visual.",
+    highlights: ["Metas ilimitadas", "Recordatorios de abonos", "Estimacion de tiempo para alcanzar la meta"],
     gradient: "from-blue-500 to-cyan-500"
   },
   {
     icon: <Repeat className="h-8 w-8" />,
     title: "Automatización Total",
-    description: "Programa pagos recurrentes y recibe notificaciones inteligentes. Netflix, Spotify, servicios... todo bajo control automático.",
+    description: "Programa recordatorios para pagos recurrentes y recibe notificaciones inteligentes. Netflix, Spotify, servicios... todo bajo control automático.",
     highlights: ["Recordatorios smart", "Fechas flexibles", "Categorización auto"],
     gradient: "from-purple-500 to-pink-500"
   },
@@ -21,28 +21,28 @@ const features = [
     icon: <LineChart className="h-8 w-8" />,
     title: "Análisis Avanzado",
     description: "Reportes visuales que revelan patrones en tus finanzas. Filtra por periodo, categoría, moneda y más.",
-    highlights: ["Gráficos interactivos", "Exportación CSV", "Predicciones IA"],
+    highlights: ["Gráficos interactivos", "Exportación CSV", "Predicciones por tendencias"],
     gradient: "from-green-500 to-emerald-500"
   },
   {
     icon: <ShieldCheck className="h-8 w-8" />,
-    title: "Seguridad Extrema",
-    description: "Cifrado de extremo a extremo, autenticación biométrica y respaldo automático en la nube.",
-    highlights: ["Cifrado AES-256", "Face/Touch ID", "Backup automático"],
+    title: "Seguridad",
+    description: "No compartimos tus datos con terceros.",
+    highlights: ["Tus datos son relativos", "Decides que compartir", "Cifrado de datos"],
     gradient: "from-red-500 to-orange-500"
   },
   {
     icon: <Zap className="h-8 w-8" />,
     title: "Velocidad Instantánea",
-    description: "Interfaz optimizada que carga en milisegundos. Navegación fluida y respuesta inmediata.",
-    highlights: ["Carga < 1 seg", "Offline ready", "Sync en tiempo real"],
+    description: "Interfaz optimizada. Navegación fluida y respuesta inmediata.",
+    highlights: ["Cargas rápidas", "Offline ready", "Sync en tiempo real"],
     gradient: "from-yellow-500 to-orange-500"
   },
   {
     icon: <Globe className="h-8 w-8" />,
     title: "Multi-moneda",
-    description: "Soporte para múltiples divisas con tasas de cambio actualizadas en tiempo real.",
-    highlights: ["50+ monedas", "Tasas en vivo", "Conversión automática"],
+    description: "Soporte para múltiples divisas con tasas de cambio actualizadas.",
+    highlights: ["20+ monedas", "Tasas actualizadas", "Conversión automática"],
     gradient: "from-indigo-500 to-purple-500"
   }
 ]
@@ -52,7 +52,7 @@ export default function ModernFeatures() {
   const isInView = useInView(ref, { once: true, amount: 0.1 })
 
   return (
-    <section ref={ref} className="py-32 relative overflow-hidden">
+    <section ref={ref} className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(239,119,37,0.1),transparent_50%)]" />
@@ -75,7 +75,7 @@ export default function ModernFeatures() {
             Características Principales
           </motion.div>
           
-          <h2 className="text-5xl lg:text-6xl font-bold mb-8 leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 md:mb-8 leading-tight">
             Todo lo que necesitas.{' '}
             <br className="hidden sm:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/70">
@@ -83,14 +83,14 @@ export default function ModernFeatures() {
             </span>
           </h2>
           
-          <p className="text-xl text-content/70 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-content/70 max-w-3xl mx-auto leading-relaxed px-2">
             Cada función diseñada con propósito. Cada detalle pensado para hacer 
-            tu experiencia financiera más intuitiva, segura y eficiente.
+            tu experiencia financiera más intuitiva y eficiente.
           </p>
         </motion.div>
 
         {/* Features Grid */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-20">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-12 sm:mb-16 md:mb-20">
           {features.map((feature, index) => (
             <motion.div
               key={index}
@@ -99,7 +99,7 @@ export default function ModernFeatures() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: index * 0.1 }}
             >
-              <div className="relative h-full p-8 rounded-3xl bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10 overflow-hidden">
+              <div className="relative h-full p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10 overflow-hidden">
                 {/* Gradient overlay on hover */}
                 <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 bg-gradient-to-br ${feature.gradient} transition-opacity duration-500`} />
                 
@@ -113,7 +113,7 @@ export default function ModernFeatures() {
                 </motion.div>
 
                 {/* Content */}
-                <h3 className="text-2xl font-bold mb-4 text-content">
+                <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-content">
                   {feature.title}
                 </h3>
                 
@@ -147,56 +147,28 @@ export default function ModernFeatures() {
         </div>
 
         <motion.div 
-          className="grid md:grid-cols-4 gap-8 mb-16"
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mb-10 sm:mb-16"
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.8 }}
         >
           {[
-            { value: "50K+", label: "Usuarios activos", icon: <Users className="text-primary" size={24} /> },
-            { value: "4.9", label: "Rating promedio", icon: <Star className="text-yellow-500" size={24} /> },
-            { value: "99.9%", label: "Tiempo activo", icon: <Zap className="text-green-500" size={24} /> },
-            { value: "24/7", label: "Soporte técnico", icon: <Headphones className="text-blue-500" size={24} /> }
+            { value: "--", label: "Usuarios activos", icon: <Users className="text-primary" size={24} /> },
+            { value: "-.-", label: "Rating promedio", icon: <Star className="text-yellow-500" size={24} /> },
+            { value: "--.-%", label: "Tiempo activo", icon: <Zap className="text-green-500" size={24} /> },
+            { value: ">1 Hora", label: "Respuesta promedio en soporte", icon: <Headphones className="text-blue-500" size={24} /> }
           ].map((stat, index) => (
             <motion.div
               key={index}
-              className="text-center p-6 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/20 dark:border-white/10"
+              className="text-center p-4 sm:p-6 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/20 dark:border-white/10"
               whileHover={{ y: -5, scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               <div className="mb-2">{stat.icon}</div>
-              <div className="text-3xl font-bold text-primary mb-1">{stat.value}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-primary mb-1">{stat.value}</div>
               <div className="text-sm text-content/70">{stat.label}</div>
             </motion.div>
           ))}
-        </motion.div>
-
-        <motion.div 
-          className="text-center"
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 1 }}
-        >
-          <div className="inline-flex flex-col sm:flex-row gap-4">
-            <motion.a
-              href="#descargas"
-              className="btn btn-primary text-lg px-8 py-4 shadow-xl shadow-primary/25"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Smartphone size={20} />
-              Prueba todas las funciones
-            </motion.a>
-            
-            <motion.a
-              href="#features"
-              className="btn btn-ghost text-lg px-8 py-4 border border-content/10"
-              whileHover={{ scale: 1.02, backgroundColor: 'rgba(239, 119, 37, 0.05)' }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Ver más detalles
-            </motion.a>
-          </div>
         </motion.div>
       </div>
     </section>
