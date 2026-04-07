@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export default function Footer() {
   return (
     <footer id="legal" className="mt-16 border-t border-black/5 dark:border-white/10">
@@ -7,9 +9,8 @@ export default function Footer() {
             © {new Date().getFullYear()} LitFinance. Todos los derechos reservados.
           </p>
           <nav className="flex flex-wrap gap-4">
-            <a className="hover:text-primary" href="#privacidad">Privacidad</a>
-            <a className="hover:text-primary" href="#terminos">Términos</a>
-            <a className="hover:text-primary" href="#soporte">Soporte</a>
+            <Link className="hover:text-primary transition-colors" to="/privacidad">Privacidad</Link>
+            <Link className="hover:text-primary transition-colors" to="/terminos">Términos</Link>
           </nav>
         </div>
       </div>
