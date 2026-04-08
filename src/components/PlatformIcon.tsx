@@ -1,4 +1,3 @@
-import React from 'react'
 import { FaAndroid, FaApple } from 'react-icons/fa'
 import { Smartphone as LucidePhone } from 'lucide-react'
 

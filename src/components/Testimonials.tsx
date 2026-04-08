@@ -1,6 +1,6 @@
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
-import { Star, Quote, ChevronLeft, ChevronRight, Heart, User, ThumbsUp, Headphones, Smile, Bot, Globe, MessageCircle } from 'lucide-react'
+import { Star, Quote, ChevronLeft, ChevronRight, Heart, User, ThumbsUp, Headphones, Smile, Globe, MessageCircle } from 'lucide-react'
 import { AndroidLogo, AppleLogo } from './PlatformIcon'
 
 const testimonials = [
